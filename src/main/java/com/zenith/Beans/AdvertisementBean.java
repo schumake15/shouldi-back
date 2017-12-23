@@ -22,7 +22,7 @@ import javax.persistence.Table;
 @Table(name = "AdTable")
 public class AdvertisementBean implements Serializable {
 
-    @Id //designates as primary key
+    @Id 
     @Column(name = "AD_ID")
     @SequenceGenerator(sequenceName = "AD_SEQ", name = "AD_SEQ")
     @GeneratedValue(generator = "AD_SEQ", strategy = GenerationType.SEQUENCE)
