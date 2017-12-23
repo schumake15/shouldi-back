@@ -10,7 +10,6 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
-//import com.revature.util.HibernateUtil;
 import com.zenith.Beans.DislikeBean;
 import com.zenith.Beans.LikeBean;
 import com.zenith.Beans.PostBean;
@@ -62,7 +61,7 @@ public class PostDAO {
     }
 
     public PostBean getUnseenPost(UserBean user) {
-
+        
         session.beginTransaction();
         Criteria criteria;
 
@@ -78,7 +77,7 @@ public class PostDAO {
         return random;
     }
 
-    public PostBean getUnseenPostGendered(UserBean user, int gender) {
+    public PostBean getUnseenPostGendered(UserBean user, String gender) {
         session.beginTransaction();
         Criteria criteria;
 
@@ -92,8 +91,8 @@ public class PostDAO {
         }
         List<PostBean> remove = new ArrayList<PostBean>();
         for (PostBean post : choosable) {
-            int postGender = post.getPoster().getGender();
-            if (gender != postGender) {
+            String postGender = post.getPoster().getGender();
+            if (!gender.equalsIgnoreCase(postGender)) {
                 remove.add(post);
             }
         }

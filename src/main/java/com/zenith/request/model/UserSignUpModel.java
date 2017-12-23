@@ -18,7 +18,8 @@ public class UserSignUpModel {
 
     private String email;
     private String password;
-    private int gender;
+    private String gender;
+    private String role; 
 
     /**
      * @return the email
@@ -51,15 +52,29 @@ public class UserSignUpModel {
     /**
      * @return the gender
      */
-    public int getGender() {
+    public String getGender() {
         return gender;
     }
 
     /**
      * @param gender the gender to set
      */
-    public void setGender(int gender) {
+    public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    /**
+     * @return the role
+     */
+    public String getRole() {
+        return role;
+    }
+
+    /**
+     * @param role the role to set
+     */
+    public void setRole(String role) {
+        this.role = role;
     }
 
 }

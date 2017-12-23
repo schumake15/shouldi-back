@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 
 import com.zenith.Beans.UserBean;
 import com.zenith.interfaces.UserService;
+import com.zenith.request.model.UserLoginModel;
 import com.zenith.request.model.UserSignUpModel;
 import com.zenith.service.UserServiceImpl;
 import com.zenith.user.response.SuccessOrFailureRegistration;
@@ -61,7 +62,7 @@ public class UserEntryPoint {
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON) 
     @Produces({MediaType.APPLICATION_JSON})    
-    public UserBean loginUser(){
+    public UserBean loginUser(UserLoginModel userLoginModel){
     	
     	return null; 
     }

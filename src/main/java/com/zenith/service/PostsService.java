@@ -33,7 +33,7 @@ public class PostsService {
         }
     }
 
-    public PostBean getUnseenPostGendered(UserBean user, int gender) {
+    public PostBean getUnseenPostGendered(UserBean user, String gender) {
         try {
             this.database.openConnection();
             return database.getUnseenPostGendered(user, gender);
