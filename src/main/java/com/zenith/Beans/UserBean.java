@@ -55,10 +55,10 @@ public class UserBean implements Serializable {
     private String password;
 
     @Column(name = "gender")
-    private int gender;
-
-    @Column(name = "is_moderator")
-    private int moderator;
+    private String gender;
+    
+    @Column(name="role")
+    private String role; 
 
     @Column(name = "locked_account")
     private int lock;
@@ -126,21 +126,14 @@ public class UserBean implements Serializable {
         this.password = password;
     }
 
-    public int getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(int gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
-    public int isModerator() {
-        return getModerator();
-    }
-
-    public void setModerator(int moderator) {
-        this.moderator = moderator;
-    }
 
     public int isLock() {
         return getLock();
@@ -149,7 +142,6 @@ public class UserBean implements Serializable {
     public void setLock(int lock) {
         this.lock = lock;
     }
-//
 
     public List<PostBean> getUser_posts() {
         return user_posts;
@@ -207,10 +199,6 @@ public class UserBean implements Serializable {
         this.dislikes = dislikes;
     }
 
-    public int getModerator() {
-        return moderator;
-    }
-
     public int getLock() {
         return lock;
     }
@@ -231,7 +219,7 @@ public class UserBean implements Serializable {
         this.user_comments = user_comments;
     }
 
-    public UserBean(int user_id, String username, String password, int gender, int moderator, int lock,
+    public UserBean(int user_id, String username, String password, String gender, String role, int lock,
             ArrayList<PostBean> user_posts, ArrayList<VPBean> viewed_posts, ArrayList<MessageBean> messages,
             ArrayList<CommentBean> user_comments, ArrayList<LikeBean> likes, ArrayList<DislikeBean> dislikes, int score) {
         super();
@@ -239,7 +227,7 @@ public class UserBean implements Serializable {
         this.email = username;
         this.password = password;
         this.gender = gender;
-        this.moderator = moderator;
+        this.role = role; 
         this.lock = lock;
         this.user_posts = user_posts;
         this.viewed_posts = viewed_posts;
@@ -254,14 +242,14 @@ public class UserBean implements Serializable {
         super();
     }
 
-    public UserBean(String username, String password, int gender, int moderator, int lock,
+    public UserBean(String username, String password, String gender, String role, int lock,
             ArrayList<PostBean> user_posts, ArrayList<VPBean> viewed_posts, ArrayList<MessageBean> messages,
             ArrayList<CommentBean> user_comments, ArrayList<LikeBean> likes, ArrayList<DislikeBean> dislikes, int score) {
         super();
         this.email = username;
         this.password = password;
         this.gender = gender;
-        this.moderator = moderator;
+        this.role = role;
         this.lock = lock;
         this.user_posts = user_posts;
         this.viewed_posts = viewed_posts;
@@ -270,6 +258,20 @@ public class UserBean implements Serializable {
         this.likes = likes;
         this.dislikes = dislikes;
         this.score = score;
+    }
+
+    /**
+     * @return the role
+     */
+    public String getRole() {
+        return role;
+    }
+
+    /**
+     * @param role the role to set
+     */
+    public void setRole(String role) {
+        this.role = role;
     }
 
 }

@@ -4,7 +4,6 @@
  * and open the template in the editor.
  */
 package com.zenith.service;
-
 import com.zenith.DAO.OracleDB;
 import com.zenith.Beans.UserBean;
 import com.zenith.DAO.UserDAO;
@@ -53,6 +52,7 @@ public class UserServiceImpl implements UserService {
         userBean.setEmail(requestObject.getEmail());
         userBean.setGender(requestObject.getGender());
         userBean.setPassword(requestObject.getPassword());
+        userBean.setRole(requestObject.getRole());
 
         /* Save user in database */
         saveUser(userBean);

@@ -8,7 +8,6 @@ package com.zenith.Beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -64,10 +63,10 @@ public class SponsorBean extends UserBean implements Serializable {
         this.ads = ads;
     }
 
-    public SponsorBean(int user_id, String username, String password, int gender, int moderator, int lock,
+    public SponsorBean(int user_id, String username, String password, String gender, String role, int lock,
             ArrayList<PostBean> user_posts, ArrayList<VPBean> viewed_posts, ArrayList<MessageBean> messages,
             ArrayList<CommentBean> user_comments, int score, String email, int balance, ArrayList<AdvertisementBean> ads, ArrayList<LikeBean> likes, ArrayList<DislikeBean> dislikes) {
-        super(user_id, username, password, gender, moderator, lock, user_posts, viewed_posts, messages, user_comments, likes, dislikes,
+        super(user_id, username, password, gender, role, lock, user_posts, viewed_posts, messages, user_comments, likes, dislikes,
                 score);
         this.email = email;
         this.balance = balance;
@@ -78,10 +77,10 @@ public class SponsorBean extends UserBean implements Serializable {
         super();
     }
 
-    public SponsorBean(String username, String password, int gender, int moderator, int lock,
+    public SponsorBean(String username, String password, String gender, String role, int lock,
             ArrayList<PostBean> user_posts, ArrayList<VPBean> viewed_posts, ArrayList<MessageBean> messages,
             ArrayList<CommentBean> user_comments, int score, String email, int balance, ArrayList<AdvertisementBean> ads, ArrayList<LikeBean> likes, ArrayList<DislikeBean> dislikes) {
-        super(username, password, gender, moderator, lock, user_posts, viewed_posts, messages, user_comments, likes, dislikes,
+        super(username, password, gender, role, lock, user_posts, viewed_posts, messages, user_comments, likes, dislikes,
                 score);
         this.email = email;
         this.balance = balance;
