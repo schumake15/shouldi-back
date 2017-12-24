@@ -16,10 +16,54 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
+@XmlRootElement
 @Table(name = "Comments")
 public class CommentBean implements Serializable {
+
+    /**
+     * @return the commentor
+     */
+    public UserBean getCommentor() {
+        return commentor;
+    }
+
+    /**
+     * @param commentor the commentor to set
+     */
+    public void setCommentor(UserBean commentor) {
+        this.commentor = commentor;
+    }
+
+    /**
+     * @return the isFlagged
+     */
+    public int getIsFlagged() {
+        return isFlagged;
+    }
+
+    /**
+     * @param isFlagged the isFlagged to set
+     */
+    public void setIsFlagged(int isFlagged) {
+        this.isFlagged = isFlagged;
+    }
+
+    /**
+     * @return the postBean
+     */
+    public PostBean getPostBean() {
+        return postBean;
+    }
+
+    /**
+     * @param postBean the postBean to set
+     */
+    public void setPostBean(PostBean postBean) {
+        this.postBean = postBean;
+    }
 
     @Id //designates as primary key
     @Column(name = "COMMENT_ID")
@@ -33,12 +77,12 @@ public class CommentBean implements Serializable {
     private UserBean commentor;
 
     @Column(name = "is_flagged")
-    int isFlagged;
+    private int isFlagged;
 
     /* Link to Posts */
     @ManyToOne
     @JoinColumn(name = "POST_ID")
-    PostBean postBean;
+    private PostBean postBean;
 
     @Column(name = "COMMENT_TEXT")
     private String comment_text;
