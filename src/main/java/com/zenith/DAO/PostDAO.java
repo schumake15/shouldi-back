@@ -20,7 +20,7 @@ import com.zenith.request.model.PostModel;
 
 public class PostDAO {
 
-    Session session = null; 
+    Session session = null;
 
     public void openConnection() {
         SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
@@ -62,7 +62,7 @@ public class PostDAO {
     }
 
     public PostBean getUnseenPost(UserBean user) {
-        
+
         session.beginTransaction();
         Criteria criteria;
 
@@ -139,18 +139,17 @@ public class PostDAO {
         difference = difference / 1000 / 60 / 60 / 24;//millisecods to days
         return difference;
     }
-    
+
     public boolean createPost(PostModel postModel) {
-        /* get the user by email for now and then change to work with token */ 
-        UserDAO userdao = new UserDAO(); 
-        System.out.println("Before null pointer exception, email is: " + postModel.getToken());
+
+        /* Creates new post */
+        UserDAO userdao = new UserDAO();
         userdao.openConnection();
-        PostBean postBean = new PostBean(postModel.getImage(), postModel.getOccasion(), userdao.getUserByEmail(postModel.getToken())); 
+        PostBean postBean = new PostBean(postModel.getImage(), postModel.getOccasion(), userdao.getUserByToken(postModel.getToken()));
         userdao.closeConnection();
-        session.beginTransaction(); 
-        session.save(postBean); 
-        session.getTransaction().commit();
-        
-        return true; 
+        session.beginTransaction();
+        session.save(postBean);
+        session.getTransaction().commit();;
+        return true;
     }
 }

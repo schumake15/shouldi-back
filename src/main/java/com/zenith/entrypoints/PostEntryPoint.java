@@ -1,4 +1,5 @@
 package com.zenith.entrypoints;
+
 import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -10,6 +11,7 @@ import com.zenith.request.model.CommentModel;
 import com.zenith.request.model.PostModel;
 import com.zenith.service.CommentService;
 import com.zenith.service.PostsService;
+import com.zenith.service.VerifyTokenCredentials;
 import com.zenith.user.response.GenericSuccessOrFailureMessage;
 import javax.ws.rs.POST;
 
@@ -24,20 +26,24 @@ public class PostEntryPoint {
         PostsService service = new PostsService();
         return service.getFlaggedPosts();
     }
-    
+
     @POST
     @Path("/post")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
-    public  GenericSuccessOrFailureMessage createPost(PostModel postModel) {
-        /* Check against the token before any other operations can be done */ 
-        PostsService service = new PostsService();
-        GenericSuccessOrFailureMessage message = new GenericSuccessOrFailureMessage(); 
-        service.createPost(postModel);
-        return  message; 
+    public GenericSuccessOrFailureMessage createPost(PostModel postModel) {
+        
+        GenericSuccessOrFailureMessage message = new GenericSuccessOrFailureMessage();
+        
+        /* Check against the token before any other operations can be done */
+        if (VerifyTokenCredentials.verifyCredentials(postModel.getToken()) != null) {
+            PostsService service = new PostsService();
+            if(service.createPost(postModel)) /* if post was created successfully */ 
+                return message; 
+        }
+        /* Toggles message from success to failure */ 
+        message.toggleMessage();
+        return message;
     }
-    
-    
-    
-    
+
 }
