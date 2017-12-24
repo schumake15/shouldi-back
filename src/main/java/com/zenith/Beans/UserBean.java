@@ -23,9 +23,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @Entity
 @Table(name = "SIUser")
+@XmlRootElement
 public class UserBean implements Serializable {
 
     /**
@@ -50,6 +52,9 @@ public class UserBean implements Serializable {
 
     @Column(name = "email")
     private String email;
+    
+    @Column(name="token")
+    private String token; 
 
     @Column(name = "password")
     private String password;
@@ -272,6 +277,20 @@ public class UserBean implements Serializable {
      */
     public void setRole(String role) {
         this.role = role;
+    }
+
+    /**
+     * @return the token
+     */
+    public String getToken() {
+        return token;
+    }
+
+    /**
+     * @param token the token to set
+     */
+    public void setToken(String token) {
+        this.token = token;
     }
 
 }

@@ -58,6 +58,14 @@ public class UserDAO {
 
     }
 
+    public void updateUser(UserBean user) {
+
+        session.beginTransaction();
+        session.update(user);
+        session.getTransaction().commit();
+
+    }
+
     public List<UserBean> getFavoriteUsers() {
 
         session.beginTransaction();

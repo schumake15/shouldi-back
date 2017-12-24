@@ -4,12 +4,15 @@
  * and open the template in the editor.
  */
 package com.zenith.service;
+
 import com.zenith.DAO.OracleDB;
 import com.zenith.Beans.UserBean;
 import com.zenith.DAO.UserDAO;
 import com.zenith.exceptions.RecordAlreadyExistsException;
+import com.zenith.exceptions.UserDoesNotExistException;
 import com.zenith.interfaces.DAO;
 import com.zenith.interfaces.UserService;
+import com.zenith.request.model.UserLoginModel;
 import com.zenith.request.model.UserSignUpModel;
 import com.zenith.user.response.ErrorMessages;
 
@@ -26,7 +29,7 @@ public class UserServiceImpl implements UserService {
     UserDAO database = null;
 
     public UserServiceImpl() {
-        this.database = new UserDAO(); 
+        this.database = new UserDAO();
     }
 
     /**
@@ -77,11 +80,32 @@ public class UserServiceImpl implements UserService {
         return userBean;
     }
 
-    private void saveUser(UserBean user) {
+    public UserBean validateCredentials(UserLoginModel userLoginModel) {
+        UserBean userBean = null;
+        userBean = this.getUserByEmail(userLoginModel.getEmail());
+        /* If user cannot be found by email, or pasword do not let them login */
+        if (userBean == null || !(userBean.getPassword().equals(userLoginModel.getPassword()))) {
+            throw new UserDoesNotExistException(ErrorMessages.USER_DOES_NOT_EXIST.name()); 
+        }
+        return userBean;
+    }
+
+    public void saveUser(UserBean user) {
 
         try {
             this.database.openConnection();
             this.database.saveUser(user);
+        } finally {
+            this.database.closeConnection();
+        }
+
+    }
+
+    public void updateUser(UserBean user) {
+
+        try {
+            this.database.openConnection();
+            this.database.updateUser(user);
         } finally {
             this.database.closeConnection();
         }

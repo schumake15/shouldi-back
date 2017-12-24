@@ -16,12 +16,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author calebschumake
  */
 @Entity
+@XmlRootElement
 @Table(name = "Messages")
 public class MessageBean implements Serializable {
 
