@@ -49,6 +49,28 @@ public class UserDAO {
             return (UserBean) users.get(0);
         }
     }
+    
+    public UserBean getUserByToken(String token) {
+
+        UserBean user = null;
+
+        /* make sure token is not null */
+        if (token == null || token.isEmpty()) {
+            return null;
+        }
+
+        /* Get user based on token */
+        String hql = "From UserBean E WHERE E.token = :token";
+        List users
+                = session.createQuery(hql).setParameter("token", token)
+                        .list();
+        if (users.isEmpty()) {
+            return null;
+        } else {
+            return (UserBean) users.get(0);
+        }
+
+    }
 
     public void saveUser(UserBean user) {
 

@@ -16,10 +16,11 @@ import com.zenith.Beans.PostBean;
 import com.zenith.Beans.UserBean;
 import com.zenith.Beans.VPBean;
 import com.zenith.hibernate.utils.HibernateUtils;
+import com.zenith.request.model.PostModel;
 
 public class PostDAO {
 
-    Session session = null; 
+    Session session = null;
 
     public void openConnection() {
         SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
@@ -61,7 +62,7 @@ public class PostDAO {
     }
 
     public PostBean getUnseenPost(UserBean user) {
-        
+
         session.beginTransaction();
         Criteria criteria;
 
@@ -137,5 +138,18 @@ public class PostDAO {
         long difference = date2.getTime() - date1.getTime();
         difference = difference / 1000 / 60 / 60 / 24;//millisecods to days
         return difference;
+    }
+
+    public boolean createPost(PostModel postModel) {
+
+        /* Creates new post */
+        UserDAO userdao = new UserDAO();
+        userdao.openConnection();
+        PostBean postBean = new PostBean(postModel.getImage(), postModel.getOccasion(), userdao.getUserByToken(postModel.getToken()));
+        userdao.closeConnection();
+        session.beginTransaction();
+        session.save(postBean);
+        session.getTransaction().commit();;
+        return true;
     }
 }

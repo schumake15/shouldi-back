@@ -128,14 +128,14 @@ public class PostBean implements Serializable {
     /**
      * @return the image
      */
-    public Blob getImage() {
+    public String getImage() {
         return image;
     }
 
     /**
      * @param image the image to set
      */
-    public void setImage(Blob image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
@@ -186,7 +186,7 @@ public class PostBean implements Serializable {
     private int flag;
     
     @Column(name="image")
-    private Blob image; 
+    private String image; 
 
     public int getPost_id() {
         return post_id;
@@ -233,6 +233,12 @@ public class PostBean implements Serializable {
         this.poster = poster;
         this.post_comments = post_comments;
         this.flag = flag;
+    }
+    
+    public PostBean (String image, String occasion, UserBean poster){
+        this.image = image;
+        this.occasion = occasion;
+        this.poster = poster; 
     }
 
     public PostBean() {

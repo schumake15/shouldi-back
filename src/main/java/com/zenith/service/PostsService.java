@@ -6,6 +6,7 @@ import com.zenith.Beans.PostBean;
 import com.zenith.Beans.UserBean;
 import com.zenith.DAO.PostDAO;
 import com.zenith.interfaces.DAO;
+import com.zenith.request.model.PostModel;
 
 public class PostsService {
 
@@ -50,4 +51,17 @@ public class PostsService {
             database.closeConnection();
         }
     }
+
+    public boolean createPost(PostModel postModel) {
+        try {
+            this.database.openConnection();
+            if(database.createPost(postModel)){
+                return true; 
+            } 
+        } finally {
+            database.closeConnection();
+        }
+        return false; 
+    }
+
 }
