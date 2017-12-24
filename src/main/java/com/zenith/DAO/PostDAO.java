@@ -16,6 +16,7 @@ import com.zenith.Beans.PostBean;
 import com.zenith.Beans.UserBean;
 import com.zenith.Beans.VPBean;
 import com.zenith.hibernate.utils.HibernateUtils;
+import com.zenith.request.model.PostModel;
 
 public class PostDAO {
 
@@ -137,5 +138,19 @@ public class PostDAO {
         long difference = date2.getTime() - date1.getTime();
         difference = difference / 1000 / 60 / 60 / 24;//millisecods to days
         return difference;
+    }
+    
+    public boolean createPost(PostModel postModel) {
+        /* get the user by email for now and then change to work with token */ 
+        UserDAO userdao = new UserDAO(); 
+        System.out.println("Before null pointer exception, email is: " + postModel.getToken());
+        userdao.openConnection();
+        PostBean postBean = new PostBean(postModel.getImage(), postModel.getOccasion(), userdao.getUserByEmail(postModel.getToken())); 
+        userdao.closeConnection();
+        session.beginTransaction(); 
+        session.save(postBean); 
+        session.getTransaction().commit();
+        
+        return true; 
     }
 }

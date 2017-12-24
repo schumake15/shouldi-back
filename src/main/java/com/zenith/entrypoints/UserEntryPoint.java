@@ -21,9 +21,9 @@ import com.zenith.interfaces.UserService;
 import com.zenith.request.model.UserLoginModel;
 import com.zenith.request.model.UserSignUpModel;
 import com.zenith.service.UserServiceImpl;
+import com.zenith.session.Token;
 import com.zenith.user.response.FavoriteUserWrapper;
-import com.zenith.user.response.SuccessOrFailureRegistration;
-import com.zenith.user.response.Token;
+import com.zenith.user.response.GenericSuccessOrFailureMessage;
 import java.util.ArrayList;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
@@ -49,11 +49,11 @@ public class UserEntryPoint {
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON) 
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML }) 
-    public SuccessOrFailureRegistration createUser(UserSignUpModel requestObject){
+    public GenericSuccessOrFailureMessage createUser(UserSignUpModel requestObject){
         // create new user
         UserService userService = new UserServiceImpl(); 
         UserBean createdUserProfile = userService.createUser(requestObject); 
-        SuccessOrFailureRegistration success = new SuccessOrFailureRegistration();
+        GenericSuccessOrFailureMessage success = new GenericSuccessOrFailureMessage();
         return success;
     }
 

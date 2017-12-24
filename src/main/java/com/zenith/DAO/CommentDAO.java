@@ -16,6 +16,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.criterion.Restrictions;
 import com.zenith.hibernate.utils.HibernateUtils;
+import com.zenith.request.model.CommentModel;
 
 /**
  *
@@ -23,7 +24,7 @@ import com.zenith.hibernate.utils.HibernateUtils;
  */
 public class CommentDAO implements DAO {
 
-    Session session = null; 
+    Session session = null;
 
     public void openConnection() {
         SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
@@ -46,6 +47,26 @@ public class CommentDAO implements DAO {
         return flagged;
     }
 
+    public boolean flagComment(CommentModel comment) {
 
+       
+        int comment_id = comment.getCommentID(); 
+
+        /* Get comment based on ID */
+        String hql = "From CommentBean E WHERE E.COMMENT_ID = :comment_id";
+        List comments
+                = session.createQuery(hql).setParameter("comment_id", comment_id)
+                        .list();
+        if (comments.isEmpty()) {
+            return false;
+        } else {
+            session.beginTransaction(); 
+            CommentBean commentToFlag = (CommentBean)comments.get(0); 
+            commentToFlag.setIsFlagged(1);
+            session.update(commentToFlag);
+            return true; 
+        }
+
+    }
 
 }
