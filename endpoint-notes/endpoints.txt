@@ -1,0 +1,43 @@
+========== Endpoints ==========
+
+
+1. To register 
+	Path: api/users/register 
+	Front-end request: {"email":, "password":, "gender":, "role":}
+	Back-end happy path response: {"message":"Success"} 
+	Back-end bad path response: {"errorMessage": "RECORD_ALREADY_EXISTS","errorMessageKey": "RECORD_ALREADY_EXISTS"}
+
+2.Login 
+	Path: api/users/login
+	Front-end request: {"email":, "password":}
+	Back-end happy path response: {"token":"unique string that indetifies a user for each session"} 
+	Back-end bad path response: {"errorMessage":"USER_DOES_NOT_EXIST", "errorMessageKey":"USER_DOES_NOT_EXIST"}
+
+3. Get users for sponsor whose score > 2000
+	Path: api/users/favorites
+	Front-end request: {"token":"unique string that indetifies a user for each session"} // provided at login, store locally on front end
+	Back-end happy path response: {
+"userEmail": [
+"joa@gmail.com"
+]
+} or empty json // this was a bear to accomplish, I will see if I can return their score as well
+	Back-end bad path response: PENDING DEVELOPMENT
+
+4. Get all flagged comments
+	Path: api/comments/flagged
+	Front-end request: {"token":"unique string that indetifies a user for each session"} or empty json // provided at login, store locally on front end
+	Back-end happy path response: PENDING DEVELOPMENT
+	Back-end bad path response: PENDING DEVELOPMENT
+
+5. Get all flagged posts 
+	Path: api/posts/flagged
+	Front-end request: {"token":"unique string that indetifies a user for each session"} or empty json // provided at login, store locally on front end
+	Back-end happy path response: PENDING DEVELOPMENT
+	Back-end bad path response: PENDING DEVELOPMENT
+	
+	
+	
+	
+
+
+
