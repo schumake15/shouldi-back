@@ -26,7 +26,7 @@ public class PostEntryPoint {
     }
     
     @POST
-    @Path("/createPost")
+    @Path("/post")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
     public  GenericSuccessOrFailureMessage createPost(PostModel postModel) {

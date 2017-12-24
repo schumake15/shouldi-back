@@ -12,6 +12,8 @@ import com.zenith.request.model.CommentModel;
 import com.zenith.service.CommentService;
 import com.zenith.user.response.GenericSuccessOrFailureMessage;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+
 
 @Path("/comments")
 public class CommentEntryPoint {
@@ -25,7 +27,7 @@ public class CommentEntryPoint {
         return service.getFlaggedComments();
     }
 
-    @POST
+    @PUT
     @Path("/flagComment")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
