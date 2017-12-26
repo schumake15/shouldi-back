@@ -6,6 +6,7 @@
 package com.zenith.Beans;
 
 import java.io.Serializable;
+import java.sql.Blob;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -30,10 +31,13 @@ public class AdvertisementBean implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "spon_id")
-    private SponsorBean Sponsor;
+    private UserBean Sponsor;
 
     @Column(name = "AD_LINK")
     private String ad_link;
+    
+    @Column(name = "IMAGE")
+    private Blob image;
 
     @Column(name = "CLICK_THRU")
     private String num_clicked;
@@ -49,11 +53,11 @@ public class AdvertisementBean implements Serializable {
         this.ad_id = ad_id;
     }
 
-    public SponsorBean getSponsor() {
+    public UserBean getSponsor() {
         return Sponsor;
     }
 
-    public void setSponsor(SponsorBean Sponsor) {
+    public void setSponsor(UserBean Sponsor) {
         this.Sponsor = Sponsor;
     }
 
@@ -65,17 +69,25 @@ public class AdvertisementBean implements Serializable {
         this.ad_link = ad_link;
     }
 
-    public AdvertisementBean(int ad_id, SponsorBean spon_id, String ad_link) {
+    public AdvertisementBean(int ad_id, UserBean spon_id, String ad_link) {
         super();
         this.ad_id = ad_id;
         this.Sponsor = spon_id;
         this.ad_link = ad_link;
     }
 
-    public AdvertisementBean(SponsorBean spon_id, String ad_link) {
+    public AdvertisementBean(UserBean spon_id, String ad_link) {
         super();
         this.Sponsor = spon_id;
         this.ad_link = ad_link;
+    }
+    
+    public AdvertisementBean(Blob image, String url, UserBean sponsor) {
+        
+        this.ad_link = url;
+        this.image = image;
+        this.Sponsor = sponsor;
+        
     }
 
     public AdvertisementBean() {

@@ -65,7 +65,15 @@
 	Back-end happy path response: {"message":"success"}  
 	Back-end bad path response: {"message":"failure"}
 
-	
+*** TESTED ***
+9. Post ad
+	HTTP request type: POST
+	Path: api/posts/ad/post
+	Front-end request: {"url":"link associated with post", "token":"unique string", "image":"image in b64", "amountToPay":"int"}
+	Back-end happy path response: {"message":"success"}  
+	Back-end bad path response: {"message":"failure"}
+
+
 	
 	
 	

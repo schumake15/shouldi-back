@@ -7,11 +7,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import com.zenith.Beans.PostBean;
+import com.zenith.DAO.UserDAO;
+import com.zenith.request.model.AdPostModel;
 import com.zenith.request.model.CommentModel;
 import com.zenith.request.model.FlagPostModel;
 import com.zenith.request.model.PostModel;
 import com.zenith.service.CommentService;
 import com.zenith.service.PostsService;
+import com.zenith.service.UserServiceImpl;
 import com.zenith.service.VerifyTokenCredentials;
 import com.zenith.user.response.GenericSuccessOrFailureMessage;
 import javax.ws.rs.POST;
@@ -34,20 +37,41 @@ public class PostEntryPoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
     public GenericSuccessOrFailureMessage createPost(PostModel postModel) {
-        
+
         GenericSuccessOrFailureMessage message = new GenericSuccessOrFailureMessage();
-        
+
         /* Check against the token before any other operations can be done */
         if (VerifyTokenCredentials.verifyCredentials(postModel.getToken()) != null) {
             PostsService service = new PostsService();
-            if(service.createPost(postModel)) /* if post was created successfully */ 
-                return message; 
+            if (service.createPost(postModel)) /* if post was created successfully */ {
+                return message;
+            }
         }
-        /* Toggles message from success to failure */ 
+        /* Toggles message from success to failure */
         message.toggleMessage();
         return message;
     }
-    
+
+    @POST
+    @Path("/ad/post")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON})
+    public GenericSuccessOrFailureMessage createAd(AdPostModel AdPostModel) {
+
+        GenericSuccessOrFailureMessage message = new GenericSuccessOrFailureMessage();
+
+        /* Check against the token before any other operations can be done */
+        if (VerifyTokenCredentials.verifyCredentials(AdPostModel.getToken()) != null) {
+            PostsService postService = new PostsService();
+            if (postService.createAd(AdPostModel)) /* if post was created successfully */ {
+                return message;
+            }
+        }
+        /* Toggles message from success to failure */
+        message.toggleMessage();
+        return message;
+    }
+
     @PUT
     @Path("/flag")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -56,8 +80,7 @@ public class PostEntryPoint {
 
         GenericSuccessOrFailureMessage message = new GenericSuccessOrFailureMessage();
         PostsService service = new PostsService();
-        System.out.println("The post id is " + post.getPostID()); 
-        
+
         /* Check against the token before any other operations can be done */
         if (VerifyTokenCredentials.verifyCredentials(post.getToken()) != null) {
             /* If post can be flagged, return success message */
@@ -69,7 +92,5 @@ public class PostEntryPoint {
         message.toggleMessage();
         return message;
     }
-    
-    
 
 }

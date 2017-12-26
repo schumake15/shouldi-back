@@ -6,8 +6,10 @@ import com.zenith.Beans.PostBean;
 import com.zenith.Beans.UserBean;
 import com.zenith.DAO.PostDAO;
 import com.zenith.interfaces.DAO;
+import com.zenith.request.model.AdPostModel;
 import com.zenith.request.model.FlagPostModel;
 import com.zenith.request.model.PostModel;
+import org.hibernate.HibernateException;
 
 public class PostsService {
 
@@ -56,22 +58,37 @@ public class PostsService {
     public boolean createPost(PostModel postModel) {
         try {
             this.database.openConnection();
-            if(database.createPost(postModel)){
-                return true; 
-            } 
+            if (database.createPost(postModel)) {
+                return true;
+            }
         } finally {
             database.closeConnection();
         }
-        return false; 
+        return false;
     }
-    
-        public boolean flagPost(FlagPostModel flagPostModel){
+
+    public boolean flagPost(FlagPostModel flagPostModel) {
         try {
             this.database.openConnection();
-            return database.flagPost(flagPostModel); 
+            return database.flagPost(flagPostModel);
         } finally {
             database.closeConnection();
         }
+    }
+
+    public boolean createAd(AdPostModel adPostModel) {
+        try {
+            this.database.openConnection();
+            if (database.createAd(adPostModel)) {
+                return true;
+            }
+        }catch(HibernateException e) {
+        
+        e.printStackTrace();
+    }finally {
+            database.closeConnection();
+        }
+        return false;
     }
 
 }
