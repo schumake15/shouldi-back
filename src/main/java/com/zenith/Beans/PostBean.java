@@ -8,6 +8,7 @@ package com.zenith.Beans;
 import java.io.Serializable;
 import java.sql.Blob;
 import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
@@ -20,7 +21,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @XmlRootElement
@@ -61,20 +65,21 @@ public class PostBean implements Serializable {
     )
     private List<DislikeBean> dislikes;
 
+    @CreationTimestamp
     @Column(name = "date_created")
-    private Date created;
-    
-    @Column(name="occasion")
-    private String occasion; 
+    private Date created; 
+
+    @Column(name = "occasion")
+    private String occasion;
 
     @Column(name = "COMPLETED")
     private int completed;
 
     @Column(name = "FLAG")
     private int flag;
-    
-    @Column(name="image")
-    private Blob image; 
+
+    @Column(name = "image")
+    private Blob image;
 
     public int getPost_id() {
         return post_id;
@@ -122,18 +127,18 @@ public class PostBean implements Serializable {
         this.post_comments = post_comments;
         this.flag = flag;
     }
-    
-    public PostBean (Blob image, String occasion, UserBean poster){
+
+    public PostBean(Blob image, String occasion, UserBean poster) {
         this.image = image;
         this.occasion = occasion;
-        this.poster = poster; 
+        this.poster = poster;
     }
 
     public PostBean() {
         super();
     }
-    
-        /**
+
+    /**
      * @return the viewed_by
      */
     public List<VPBean> getViewed_by() {
