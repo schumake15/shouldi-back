@@ -6,6 +6,7 @@ import com.zenith.Beans.PostBean;
 import com.zenith.Beans.UserBean;
 import com.zenith.DAO.PostDAO;
 import com.zenith.interfaces.DAO;
+import com.zenith.request.model.FlagPostModel;
 import com.zenith.request.model.PostModel;
 
 public class PostsService {
@@ -62,6 +63,15 @@ public class PostsService {
             database.closeConnection();
         }
         return false; 
+    }
+    
+        public boolean flagPost(FlagPostModel flagPostModel){
+        try {
+            this.database.openConnection();
+            return database.flagPost(flagPostModel); 
+        } finally {
+            database.closeConnection();
+        }
     }
 
 }

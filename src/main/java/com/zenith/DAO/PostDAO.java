@@ -17,6 +17,7 @@ import com.zenith.Beans.PostBean;
 import com.zenith.Beans.UserBean;
 import com.zenith.Beans.VPBean;
 import com.zenith.hibernate.utils.HibernateUtils;
+import com.zenith.request.model.FlagPostModel;
 import com.zenith.request.model.PostModel;
 import java.sql.Blob;
 
@@ -147,12 +148,34 @@ public class PostDAO {
         /* Creates new post */
         UserDAO userdao = new UserDAO();
         userdao.openConnection();
-        Blob image = ImageConversionUtil.convertToBlob(postModel.getImage()); 
+        Blob image = ImageConversionUtil.convertToBlob(postModel.getImage());
         PostBean postBean = new PostBean(image, postModel.getOccasion(), userdao.getUserByToken(postModel.getToken()));
         userdao.closeConnection();
         session.beginTransaction();
         session.save(postBean);
-        session.getTransaction().commit();;
+        session.getTransaction().commit();
         return true;
+    }
+
+    public boolean flagPost(FlagPostModel flagPostModel) {
+
+        int post_id = flagPostModel.getPostID();
+
+        /* Get post based on ID */
+        String hql = "From PostBean E WHERE E.post_id = :_id";
+        List posts
+                = session.createQuery(hql).setParameter("_id", post_id)
+                        .list();
+        if (posts.isEmpty()) {
+            return false;
+        } else {
+            session.beginTransaction();
+            PostBean postBean = (PostBean) posts.get(0);
+            postBean.setFlag(1);
+            session.update(postBean);
+            session.getTransaction().commit();
+            return true;
+        }
+
     }
 }
