@@ -31,6 +31,34 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class UserBean implements Serializable {
 
     /**
+     * @return the balance
+     */
+    public int getBalance() {
+        return balance;
+    }
+
+    /**
+     * @param balance the balance to set
+     */
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
+
+    /**
+     * @return the ads
+     */
+    public List<AdvertisementBean> getAds() {
+        return ads;
+    }
+
+    /**
+     * @param ads the ads to set
+     */
+    public void setAds(List<AdvertisementBean> ads) {
+        this.ads = ads;
+    }
+
+    /**
      * @return the email
      */
     public String getEmail() {
@@ -53,6 +81,9 @@ public class UserBean implements Serializable {
     @Column(name = "email")
     private String email;
     
+    @Column(name = "BALANCE")
+    private int balance;
+    
     @Column(name="token")
     private String token; 
 
@@ -73,6 +104,12 @@ public class UserBean implements Serializable {
             orphanRemoval = true
     )
     private List<PostBean> user_posts;
+    
+        @OneToMany(
+            mappedBy = "Sponsor",
+            orphanRemoval = true
+    )
+    private List<AdvertisementBean> ads;
 
     @OneToMany(
             mappedBy = "viewer",

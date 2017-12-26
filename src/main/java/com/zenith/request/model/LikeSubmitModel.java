@@ -6,4 +6,5 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class LikeSubmitModel {
 	String comment;
 	int like; 
+        String token; 
 }

@@ -36,6 +36,10 @@ public class MessageBean implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id")
     UserBean userBean;
+    
+    @ManyToOne
+    @JoinColumn(name = "sponsor_id")
+    UserBean sponsorBean;
 
     @OneToOne
     @JoinColumn(name = "TO_ID")

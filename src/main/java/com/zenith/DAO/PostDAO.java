@@ -1,6 +1,7 @@
 package com.zenith.DAO;
 
 import ImageUtils.ImageConversionUtil;
+import com.zenith.Beans.AdvertisementBean;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -21,6 +22,8 @@ import com.zenith.Beans.PostBean;
 import com.zenith.Beans.UserBean;
 import com.zenith.Beans.VPBean;
 import com.zenith.hibernate.utils.HibernateUtils;
+import com.zenith.request.model.AdPostModel;
+import com.zenith.request.model.FlagPostModel;
 import com.zenith.request.model.PostModel;
 import com.zenith.request.model.RatingModel;
 
@@ -151,12 +154,12 @@ public class PostDAO {
         /* Creates new post */
         UserDAO userdao = new UserDAO();
         userdao.openConnection();
-        Blob image = ImageConversionUtil.convertToBlob(postModel.getImage()); 
+        Blob image = ImageConversionUtil.convertToBlob(postModel.getImage());
         PostBean postBean = new PostBean(image, postModel.getOccasion(), userdao.getUserByToken(postModel.getToken()));
         userdao.closeConnection();
         session.beginTransaction();
         session.save(postBean);
-        session.getTransaction().commit();;
+        session.getTransaction().commit();
         return true;
     }
     
@@ -235,4 +238,67 @@ public class PostDAO {
 			session.close();
 		}	
 	}
+
+    public boolean flagPost(FlagPostModel flagPostModel) {
+
+        int post_id = flagPostModel.getPostID();
+
+        /* Get post based on ID */
+        String hql = "From PostBean E WHERE E.post_id = :_id";
+        List posts
+                = session.createQuery(hql).setParameter("_id", post_id)
+                        .list();
+        if (posts.isEmpty()) {
+            return false;
+        } else {
+            session.beginTransaction();
+            PostBean postBean = (PostBean) posts.get(0);
+            postBean.setFlag(1);
+            session.update(postBean);
+            session.getTransaction().commit();
+            return true;
+        }
+
+    }
+
+    public boolean createAd(AdPostModel adPostModel) {
+
+        /* Creates new post */
+        UserDAO userdao = new UserDAO();
+        userdao.openConnection();
+        
+        /* Remove money from the sponsors balance based on amount to pay for ad */ 
+        UserBean sponsor = userdao.getUserByToken(adPostModel.getToken()); 
+      
+        /* create ad and save both the ad and the sponsor */
+        Blob image = ImageConversionUtil.convertToBlob(adPostModel.getImage());
+        AdvertisementBean adBean = new AdvertisementBean(image, adPostModel.getUrl(), sponsor);
+        
+        session.beginTransaction();
+        session.save(adBean);
+        session.getTransaction().commit();
+        userdao.closeConnection();
+        
+        this.saveNewBalance(adPostModel); 
+        
+        return true;
+    }
+    
+    /* Should make a check so user cannot go into negative balance */ 
+    private void saveNewBalance(AdPostModel adPostModel) {
+        
+        UserDAO userdao = new UserDAO();
+        userdao.openConnection();
+        
+        UserBean sponsor = userdao.getUserByToken(adPostModel.getToken()); 
+        int currrentBalance = sponsor.getBalance(); 
+        currrentBalance = currrentBalance - adPostModel.getAmountToPay(); 
+        sponsor.setBalance(currrentBalance);
+       
+        session.beginTransaction();
+        session.merge(sponsor); 
+        session.getTransaction().commit();
+        userdao.closeConnection();
+        
+    }
 }

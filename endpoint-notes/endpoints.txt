@@ -17,7 +17,7 @@
 	Back-end bad path response: {"errorMessage":"USER_DOES_NOT_EXIST", "errorMessageKey":"USER_DOES_NOT_EXIST"}
 
 ***TESTED***
-3. Get users for sponsor whose score > 2000 
+3. Get users for sponsor whose score > 2000 // back-end note: use GenericGetModel for token authentication
 	HTTP request type: GET
 	Path: api/users/favorites
 	Front-end request: {"token":"unique string that indetifies a user for each session"} // provided at login, store locally on front end
@@ -28,24 +28,24 @@
 } or empty json // this was a bear to accomplish, I will see if I can return their score as well
 	Back-end bad path response: PENDING DEVELOPMENT
 
-4. Get all flagged comments
+4. Get all flagged comments // back-end note: use GenericGetModel for token authentication
 	HTTP request type: GET
 	Path: api/comments/flagged
 	Front-end request: {"token":"unique string that indetifies a user for each session"} or empty json // provided at login, store locally on front end
 	Back-end happy path response: PENDING DEVELOPMENT
 	Back-end bad path response: PENDING DEVELOPMENT
 
-5. Get all flagged posts 
+5. Get all flagged posts // back-end note: use GenericGetModel for token authentication
 	HTTP request type: GET
 	Path: api/posts/flagged
-	Front-end request: {"token":"unique string that indetifies a user for each session"} or empty json // provided at login, store locally on front end
+	Front-end request: {"token":"unique string that indeteifies a user for each session"} or empty json // provided at login, store locally on front end
 	Back-end happy path response: PENDING DEVELOPMENT
 	Back-end bad path response: PENDING DEVELOPMENT
 
 6. Flag comment
 	HTTP request type: PUT
-	Path: api/comments/flagComment
-	Front-end request: {"token":"unique string that indetifies a user for each session", "comment_id"} 
+	Path: api/comments/flag
+	Front-end request: {"token":"unique string that indetifies a user for each session", "commentID":"comment id"} 
 	Back-end happy path response: {"message":"success"} 
 	Back-end bad path response: {"message":"failure"} 
 
@@ -53,11 +53,27 @@
 7. Create post
 	HTTP request type: POST
 	Path: api/posts/post
-	Front-end request: {"image_data":"image data expected to be in b64 format", "occasion":"wedding/date/etc", "token":"unique string"}
+	Front-end request: {"image":"image data expected to be in b64 format", "occasion":"wedding/date/etc", "token":"unique string"}
 	Back-end happy path response: {"message":"success"}  
 	Back-end bad path response: {"message":"failure"}
 
-	
+*** TESTED ***
+8. Flag post
+	HTTP request type: PUT
+	Path: api/posts/flag
+	Front-end request: {"postID":"ID of the post", "token":"unique string"}
+	Back-end happy path response: {"message":"success"}  
+	Back-end bad path response: {"message":"failure"}
+
+*** TESTED ***
+9. Post ad
+	HTTP request type: POST
+	Path: api/posts/ad/post
+	Front-end request: {"url":"link associated with post", "token":"unique string", "image":"image in b64", "amountToPay":"int"}
+	Back-end happy path response: {"message":"success"}  
+	Back-end bad path response: {"message":"failure"}
+
+
 	
 	
 	
