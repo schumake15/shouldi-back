@@ -49,12 +49,14 @@ public class UserEntryPoint {
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON) 
     @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML }) 
-    public GenericSuccessOrFailureMessage createUser(UserSignUpModel requestObject){
+    public Response createUser(UserSignUpModel requestObject){
         // create new user
         UserService userService = new UserServiceImpl(); 
         UserBean createdUserProfile = userService.createUser(requestObject); 
         GenericSuccessOrFailureMessage success = new GenericSuccessOrFailureMessage();
-        return success;
+        return Response.ok() //200
+			.entity(success).build(); 
+			
     }
 
     @GET
