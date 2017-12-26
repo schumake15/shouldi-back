@@ -1,5 +1,6 @@
 package com.zenith.DAO;
 
+import ImageUtils.ImageConversionUtil;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,6 +18,7 @@ import com.zenith.Beans.UserBean;
 import com.zenith.Beans.VPBean;
 import com.zenith.hibernate.utils.HibernateUtils;
 import com.zenith.request.model.PostModel;
+import java.sql.Blob;
 
 public class PostDAO {
 
@@ -145,7 +147,8 @@ public class PostDAO {
         /* Creates new post */
         UserDAO userdao = new UserDAO();
         userdao.openConnection();
-        PostBean postBean = new PostBean(postModel.getImage(), postModel.getOccasion(), userdao.getUserByToken(postModel.getToken()));
+        Blob image = ImageConversionUtil.convertToBlob(postModel.getImage()); 
+        PostBean postBean = new PostBean(image, postModel.getOccasion(), userdao.getUserByToken(postModel.getToken()));
         userdao.closeConnection();
         session.beginTransaction();
         session.save(postBean);
