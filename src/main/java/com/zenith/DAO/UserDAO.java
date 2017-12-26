@@ -6,10 +6,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
+
 import com.zenith.Beans.UserBean;
 import com.zenith.hibernate.utils.HibernateUtils;
 import com.zenith.interfaces.DAO;
@@ -99,4 +102,25 @@ public class UserDAO {
         return favorites;
 
     }
+    
+	public void lockUser(UserBean user) {
+		UserBean lockUser = null;
+		Transaction tx = session.getTransaction();
+		try {
+			tx = session.beginTransaction();
+			lockUser = (UserBean) session.get(UserBean.class, user);
+			if (lockUser != null) {
+				lockUser.setLock(1);
+				session.save(lockUser);
+				tx.commit();
+			}
+		} catch (HibernateException e) {
+			if (tx != null)
+				tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+	}
 }

@@ -8,9 +8,13 @@ import java.util.List;
 import java.util.Random;
 
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
+
+import com.zenith.Beans.CommentBean;
 import com.zenith.Beans.DislikeBean;
 import com.zenith.Beans.LikeBean;
 import com.zenith.Beans.PostBean;
@@ -18,6 +22,8 @@ import com.zenith.Beans.UserBean;
 import com.zenith.Beans.VPBean;
 import com.zenith.hibernate.utils.HibernateUtils;
 import com.zenith.request.model.PostModel;
+import com.zenith.request.model.RatingModel;
+
 import java.sql.Blob;
 
 public class PostDAO {
@@ -38,7 +44,6 @@ public class PostDAO {
     public List<PostBean> getFlaggedPosts() {
 
         session.beginTransaction();
-        Criteria criteria;
 
         List<PostBean> flagged = session.createCriteria(PostBean.class).list();
 
@@ -66,7 +71,6 @@ public class PostDAO {
     public PostBean getUnseenPost(UserBean user) {
 
         session.beginTransaction();
-        Criteria criteria;
 
         List<PostBean> choosable = session.createCriteria(PostBean.class).list();
         choosable = session.createCriteria(PostBean.class).add(Restrictions.eq("completed", 0)).list();
@@ -82,7 +86,6 @@ public class PostDAO {
 
     public PostBean getUnseenPostGendered(UserBean user, String gender) {
         session.beginTransaction();
-        Criteria criteria;
 
         List<PostBean> choosable = session.createCriteria(PostBean.class).list();
         choosable = session.createCriteria(PostBean.class).add(Restrictions.eq("completed", 0)).list();
@@ -133,6 +136,7 @@ public class PostDAO {
         post.getPoster().setScore(post.getPoster().getScore() + (likes.size() / 10));
         post.setCompleted(1);
         session.save(post);
+        session.getTransaction().commit();
 
     }
 
@@ -155,4 +159,80 @@ public class PostDAO {
         session.getTransaction().commit();;
         return true;
     }
+    
+	public void removePost(PostBean post) {
+		PostBean delPost=null;
+		Transaction tx=session.getTransaction();
+		try {
+			tx=session.beginTransaction();
+			delPost=(PostBean)session.get(PostBean.class, post);
+			if(delPost!=null) {
+				session.delete(delPost);
+				tx.commit();
+			}
+		}
+		catch(HibernateException e)
+		{
+			if(tx!=null)
+				tx.rollback();
+			e.printStackTrace();
+		}
+		finally {
+			session.close();
+		}	
+	}
+
+	public void like(RatingModel rating) {
+		PostBean post=null;
+		Transaction tx=session.getTransaction();
+		try {
+			tx=session.beginTransaction();
+			post=(PostBean)session.get(PostBean.class, rating.getPost());
+			if(post!=null) {
+				post.getLikes().add(new LikeBean(rating.getRater(), rating.getPost()));
+				if(!rating.getComment().equals(""))
+				{
+					post.getPost_comments().add(new CommentBean(rating.getPost(), rating.getRater(), rating.getComment()));
+				}
+				session.save(post);
+				tx.commit();
+			}
+		}
+		catch(HibernateException e)
+		{
+			if(tx!=null)
+				tx.rollback();
+			e.printStackTrace();
+		}
+		finally {
+			session.close();
+		}	
+	}
+	
+	public void dislike(RatingModel rating) {
+		PostBean post=null;
+		Transaction tx=session.getTransaction();
+		try {
+			tx=session.beginTransaction();
+			post=(PostBean)session.get(PostBean.class, rating.getPost());
+			if(post!=null) {
+				post.getDislikes().add(new DislikeBean(rating.getRater(), rating.getPost()));
+				if(!rating.getComment().equals(""))
+				{
+					post.getPost_comments().add(new CommentBean(rating.getPost(), rating.getRater(), rating.getComment()));
+				}
+				session.save(post);
+				tx.commit();
+			}
+		}
+		catch(HibernateException e)
+		{
+			if(tx!=null)
+				tx.rollback();
+			e.printStackTrace();
+		}
+		finally {
+			session.close();
+		}	
+	}
 }

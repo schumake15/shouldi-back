@@ -96,5 +96,14 @@ public class UserEntryPoint {
         }
         return null; /* Compiler happy */ 
     }
+    
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/lock")
+	public void lockUser(UserBean user)
+	{
+		UserServiceImpl service= new UserServiceImpl();
+		service.lockUser(user);
+	}
 
 }

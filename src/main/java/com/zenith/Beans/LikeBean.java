@@ -30,7 +30,27 @@ public class LikeBean {
     @JoinColumn(name = "post_id")
     private PostBean post;
 
-    /**
+    
+    
+    
+    public LikeBean() {
+		super();
+	}
+
+	public LikeBean(UserBean user, PostBean post) {
+		super();
+		this.user = user;
+		this.post = post;
+	}
+
+	public LikeBean(int like_id, UserBean user, PostBean post) {
+		super();
+		this.like_id = like_id;
+		this.user = user;
+		this.post = post;
+	}
+
+	/**
      * @return the like_id
      */
     public int getLike_id() {

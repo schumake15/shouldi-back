@@ -30,6 +30,24 @@ public class DislikeBean {
     @JoinColumn(name = "post_id")
     private PostBean post;
 
+    
+    public DislikeBean() {
+		super();
+	}
+
+	public DislikeBean(UserBean user, PostBean post) {
+		super();
+		this.user = user;
+		this.post = post;
+	}
+
+	public DislikeBean(int like_id, UserBean user, PostBean post) {
+		super();
+		this.dislike_id = like_id;
+		this.user = user;
+		this.post = post;
+	}
+    
     /**
      * @return the dislike_id
      */
