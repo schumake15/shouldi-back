@@ -120,4 +120,17 @@ public class UserServiceImpl implements UserService {
             database.closeConnection();
         }
     }
+    
+	public void lockUser(UserBean user) {
+    	try 
+    	{
+    		this.database.openConnection();
+    		database.lockUser(user);
+    	}
+    	finally
+    	{
+    		database.closeConnection();
+    	}
+		
+	}
 }

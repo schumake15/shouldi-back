@@ -9,6 +9,7 @@ import com.zenith.interfaces.DAO;
 import com.zenith.request.model.AdPostModel;
 import com.zenith.request.model.FlagPostModel;
 import com.zenith.request.model.PostModel;
+import com.zenith.request.model.RatingModel;
 import org.hibernate.HibernateException;
 
 public class PostsService {
@@ -90,5 +91,41 @@ public class PostsService {
         }
         return false;
     }
+    
+	public void removePost(PostBean post) {
+	   	try 
+    	{
+    		this.database.openConnection();
+    		database.removePost(post);
+    	}
+    	finally
+    	{
+    		database.closeConnection();
+    	}
+	}
+
+	public void like(RatingModel rating) {
+	   	try 
+    	{
+    		this.database.openConnection();
+    		database.like(rating);
+    	}
+    	finally
+    	{
+    		database.closeConnection();
+    	}		
+	}
+	
+	public void dislike(RatingModel rating) {
+	   	try 
+    	{
+    		this.database.openConnection();
+    		database.dislike(rating);
+    	}
+    	finally
+    	{
+    		database.closeConnection();
+    	}	
+	}
 
 }
