@@ -16,30 +16,30 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class PostModel {
 
-    /* Upon creating a post, all we need is the imagePath, occasion and token */
-    private String imagePath;
+    /* Upon creating a post, all we need is the image, occasion and token */
+    private String image;
     private String occasion;
     private String  token;
     
     public PostModel(String image, String occasion, int usser_id){
-        this.imagePath = image;
+        this.image = image;
         this.occasion = occasion;
         this.token = token;
     }
     
     public PostModel(){}
     /**
-     * @return the imagePath
+     * @return the image
      */
     public String getImage() {
-        return imagePath;
+        return image;
     }
 
     /**
-     * @param image the imagePath to set
+     * @param image the image to set
      */
     public void setImage(String image) {
-        this.imagePath = image;
+        this.image = image;
     }
 
     /**
