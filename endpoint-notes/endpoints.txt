@@ -53,7 +53,7 @@
 7. Create post
 	HTTP request type: POST
 	Path: api/posts/post
-	Front-end request: {"imagePath":"path on our server to the image", "occasion":"wedding/date/etc", "token":"unique string"}
+	Front-end request: {"image_data":"image data expected to be in b64 format", "occasion":"wedding/date/etc", "token":"unique string"}
 	Back-end happy path response: {"message":"success"}  
 	Back-end bad path response: {"message":"failure"}
 
