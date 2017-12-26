@@ -59,7 +59,7 @@
 
 *** TESTED ***
 8. Flag post
-	HTTP request type: POST
+	HTTP request type: PUT
 	Path: api/posts/flag
 	Front-end request: {"postID":"ID of the post", "token":"unique string"}
 	Back-end happy path response: {"message":"success"}  
