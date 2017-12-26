@@ -50,7 +50,7 @@ Contributor(s):
     <property name="hibernate.hbm2ddl.auto">create</property>
     
     <mapping class="com.zenith.Beans.UserBean"/>
-    <mapping class="com.zenith.Beans.SponsorBean"/>
+<!--    <mapping class="com.zenith.Beans.SponsorBean"/>-->
     <mapping class="com.zenith.Beans.PostBean"/>
     <mapping class="com.zenith.Beans.MessageBean"/>
     <mapping class="com.zenith.Beans.CommentBean"/>

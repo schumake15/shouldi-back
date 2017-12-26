@@ -49,7 +49,7 @@ public class UserDAO {
             return (UserBean) users.get(0);
         }
     }
-    
+
     public UserBean getUserByToken(String token) {
 
         UserBean user = null;
@@ -71,6 +71,8 @@ public class UserDAO {
         }
 
     }
+    
+    
 
     public void saveUser(UserBean user) {
 
