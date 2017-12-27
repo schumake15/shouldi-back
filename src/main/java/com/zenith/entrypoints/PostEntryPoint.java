@@ -13,6 +13,7 @@ import com.zenith.DAO.UserDAO;
 import com.zenith.request.model.AdPostModel;
 import com.zenith.request.model.CommentModel;
 import com.zenith.request.model.FlagPostModel;
+import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.PostModel;
 import com.zenith.request.model.PostRequestModel;
 import com.zenith.request.model.RatingModel;
@@ -23,6 +24,10 @@ import com.zenith.service.VerifyTokenCredentials;
 import com.zenith.user.response.GenericSuccessOrFailureMessage;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
+import com.zenith.templates.PostTemplate;
+import java.util.ArrayList;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.Response;
 
 @Path("/posts")
 public class PostEntryPoint {
@@ -34,6 +39,19 @@ public class PostEntryPoint {
     public List<PostBean> getFlaggedPosts() {
         PostsService service = new PostsService();
         return service.getFlaggedPosts();
+    }
+
+    @POST
+    @Path("/my/posts")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getMyPosts(GenericGetModel getModel) {
+        PostsService service = new PostsService();
+        List<PostTemplate> list = service.getMyPosts(getModel); 
+        GenericEntity<List<PostTemplate>> entity = new GenericEntity<List<PostTemplate>>(list) {
+        };
+        Response response = Response.ok(entity).build();
+        return response;
     }
 
     @POST
@@ -96,60 +114,57 @@ public class PostEntryPoint {
         message.toggleMessage();
         return message;
     }
-    
+
     @GET
     @Path("/unseen/all")
     @Consumes(MediaType.APPLICATION_JSON) // our method consumes or takes in json data
     @Produces({MediaType.APPLICATION_JSON})
-	public PostBean getUnseenPost(UserBean user){
-    	PostsService service= new PostsService();
-    	return service.getUnseenPost(user);
+    public PostBean getUnseenPost(UserBean user) {
+        PostsService service = new PostsService();
+        return service.getUnseenPost(user);
     }
-    
+
     @GET
     @Path("/unseen/gender")
     @Consumes(MediaType.APPLICATION_JSON) // our method consumes or takes in json data
     @Produces({MediaType.APPLICATION_JSON})
-	public PostBean getUnseenPostGendered(PostRequestModel post){
-    	PostsService service= new PostsService();
-    	
-    	return service.getUnseenPostGendered(post.getUser(), post.getGender());
+    public PostBean getUnseenPostGendered(PostRequestModel post) {
+        PostsService service = new PostsService();
+
+        return service.getUnseenPostGendered(post.getUser(), post.getGender());
     }
-    
+
     @GET
     @Path("/best/{eventId}")
     @Consumes(MediaType.APPLICATION_JSON) // our method consumes or takes in json data
     @Produces({MediaType.APPLICATION_JSON})
-	public PostBean getBestEventPost(@PathParam("eventId") int event){
-    	PostsService service= new PostsService();
-    	return service.getBestEventPost(event);
+    public PostBean getBestEventPost(@PathParam("eventId") int event) {
+        PostsService service = new PostsService();
+        return service.getBestEventPost(event);
     }
-    
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/remove")
-	public void removePost(PostBean post)
-	{
-		PostsService service= new PostsService();
-		service.removePost(post);
-	}
-	
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/like")
-	public void like(RatingModel rating)
-	{
-		PostsService service= new PostsService();
-		service.like(rating);
-	}
-	
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/dislike")
-	public void dislike(RatingModel rating)
-	{
-		PostsService service= new PostsService();
-		service.dislike(rating);
-	}
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/remove")
+    public void removePost(PostBean post) {
+        PostsService service = new PostsService();
+        service.removePost(post);
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/like")
+    public void like(RatingModel rating) {
+        PostsService service = new PostsService();
+        service.like(rating);
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/dislike")
+    public void dislike(RatingModel rating) {
+        PostsService service = new PostsService();
+        service.dislike(rating);
+    }
 
 }

@@ -63,6 +63,12 @@ public class UserServiceImpl implements UserService {
         /* return information back to client */
         return userBean;
     }
+    
+    public UserBean getUserByToken(String token) {
+        this.database.openConnection();
+     
+        return this.database.getUserByToken(token); 
+    }
 
     private UserBean getUserByEmail(String email) {
 

@@ -1,6 +1,7 @@
 package com.zenith.DAO;
 
-import ImageUtils.ImageConversionUtil;
+import com.zenith.ImageUtils.ImageConversionUtil;
+import com.google.gson.Gson;
 import com.zenith.Beans.AdvertisementBean;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -24,10 +25,13 @@ import com.zenith.Beans.VPBean;
 import com.zenith.hibernate.utils.HibernateUtils;
 import com.zenith.request.model.AdPostModel;
 import com.zenith.request.model.FlagPostModel;
+import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.PostModel;
 import com.zenith.request.model.RatingModel;
+import com.zenith.service.UserServiceImpl;
 
 import java.sql.Blob;
+import com.zenith.templates.PostTemplate;
 
 public class PostDAO {
 
@@ -42,6 +46,32 @@ public class PostDAO {
         if (session != null) {
             session.close();
         }
+    }
+
+    public List<PostTemplate> getMyPosts(GenericGetModel getModel) {
+        String token = getModel.getToken();
+        UserServiceImpl service = new UserServiceImpl();
+        UserBean userBean = service.getUserByToken(token);
+        
+        /* Need to hold posts temporarily */ 
+        List<PostBean> temp = new ArrayList<PostBean>();
+        /* All posts will be converted to a PostTemplate */ 
+        List<PostTemplate> postTemplate = new ArrayList<PostTemplate>();
+        /* Comments for every post */ 
+        List<String> comments = new ArrayList<String>(); 
+        
+        /* Image needs to be converted to proper format for each post */ 
+        String image; 
+        temp = userBean.getUser_posts();
+        for (PostBean bean : temp) {
+            image = ImageConversionUtil.convertToB64(bean.getImage()); 
+            List<CommentBean> commentBean = bean.getPost_comments(); 
+            for (CommentBean comment : commentBean) {
+                comments.add(comment.getComment_text()); 
+            }
+            postTemplate.add(new PostTemplate(bean.getPost_id(), bean.getLikes().size(), image, bean.getDislikes().size(), comments)); 
+        }
+        return postTemplate; 
     }
 
     public List<PostBean> getFlaggedPosts() {
@@ -154,7 +184,9 @@ public class PostDAO {
         /* Creates new post */
         UserDAO userdao = new UserDAO();
         userdao.openConnection();
-        Blob image = ImageConversionUtil.convertToBlob(postModel.getImage());
+        String s = postModel.getImage();
+        s = s.substring(s.lastIndexOf(',') + 1);
+        Blob image = ImageConversionUtil.convertToBlob(s);
         PostBean postBean = new PostBean(image, postModel.getOccasion(), userdao.getUserByToken(postModel.getToken()));
         userdao.closeConnection();
         session.beginTransaction();
@@ -162,82 +194,74 @@ public class PostDAO {
         session.getTransaction().commit();
         return true;
     }
-    
-	public void removePost(PostBean post) {
-		PostBean delPost=null;
-		Transaction tx=session.getTransaction();
-		try {
-			tx=session.beginTransaction();
-			delPost=(PostBean)session.get(PostBean.class, post);
-			if(delPost!=null) {
-				session.delete(delPost);
-				tx.commit();
-			}
-		}
-		catch(HibernateException e)
-		{
-			if(tx!=null)
-				tx.rollback();
-			e.printStackTrace();
-		}
-		finally {
-			session.close();
-		}	
-	}
 
-	public void like(RatingModel rating) {
-		PostBean post=null;
-		Transaction tx=session.getTransaction();
-		try {
-			tx=session.beginTransaction();
-			post=(PostBean)session.get(PostBean.class, rating.getPost());
-			if(post!=null) {
-				post.getLikes().add(new LikeBean(rating.getRater(), rating.getPost()));
-				if(!rating.getComment().equals(""))
-				{
-					post.getPost_comments().add(new CommentBean(rating.getPost(), rating.getRater(), rating.getComment()));
-				}
-				session.save(post);
-				tx.commit();
-			}
-		}
-		catch(HibernateException e)
-		{
-			if(tx!=null)
-				tx.rollback();
-			e.printStackTrace();
-		}
-		finally {
-			session.close();
-		}	
-	}
-	
-	public void dislike(RatingModel rating) {
-		PostBean post=null;
-		Transaction tx=session.getTransaction();
-		try {
-			tx=session.beginTransaction();
-			post=(PostBean)session.get(PostBean.class, rating.getPost());
-			if(post!=null) {
-				post.getDislikes().add(new DislikeBean(rating.getRater(), rating.getPost()));
-				if(!rating.getComment().equals(""))
-				{
-					post.getPost_comments().add(new CommentBean(rating.getPost(), rating.getRater(), rating.getComment()));
-				}
-				session.save(post);
-				tx.commit();
-			}
-		}
-		catch(HibernateException e)
-		{
-			if(tx!=null)
-				tx.rollback();
-			e.printStackTrace();
-		}
-		finally {
-			session.close();
-		}	
-	}
+    public void removePost(PostBean post) {
+        PostBean delPost = null;
+        Transaction tx = session.getTransaction();
+        try {
+            tx = session.beginTransaction();
+            delPost = (PostBean) session.get(PostBean.class, post);
+            if (delPost != null) {
+                session.delete(delPost);
+                tx.commit();
+            }
+        } catch (HibernateException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    public void like(RatingModel rating) {
+        PostBean post = null;
+        Transaction tx = session.getTransaction();
+        try {
+            tx = session.beginTransaction();
+            post = (PostBean) session.get(PostBean.class, rating.getPost());
+            if (post != null) {
+                post.getLikes().add(new LikeBean(rating.getRater(), rating.getPost()));
+                if (!rating.getComment().equals("")) {
+                    post.getPost_comments().add(new CommentBean(rating.getPost(), rating.getRater(), rating.getComment()));
+                }
+                session.save(post);
+                tx.commit();
+            }
+        } catch (HibernateException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
+
+    public void dislike(RatingModel rating) {
+        PostBean post = null;
+        Transaction tx = session.getTransaction();
+        try {
+            tx = session.beginTransaction();
+            post = (PostBean) session.get(PostBean.class, rating.getPost());
+            if (post != null) {
+                post.getDislikes().add(new DislikeBean(rating.getRater(), rating.getPost()));
+                if (!rating.getComment().equals("")) {
+                    post.getPost_comments().add(new CommentBean(rating.getPost(), rating.getRater(), rating.getComment()));
+                }
+                session.save(post);
+                tx.commit();
+            }
+        } catch (HibernateException e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+    }
 
     public boolean flagPost(FlagPostModel flagPostModel) {
 
@@ -266,39 +290,39 @@ public class PostDAO {
         /* Creates new post */
         UserDAO userdao = new UserDAO();
         userdao.openConnection();
-        
-        /* Remove money from the sponsors balance based on amount to pay for ad */ 
-        UserBean sponsor = userdao.getUserByToken(adPostModel.getToken()); 
-      
+
+        /* Remove money from the sponsors balance based on amount to pay for ad */
+        UserBean sponsor = userdao.getUserByToken(adPostModel.getToken());
+
         /* create ad and save both the ad and the sponsor */
         Blob image = ImageConversionUtil.convertToBlob(adPostModel.getImage());
         AdvertisementBean adBean = new AdvertisementBean(image, adPostModel.getUrl(), sponsor);
-        
+
         session.beginTransaction();
         session.save(adBean);
         session.getTransaction().commit();
         userdao.closeConnection();
-        
-        this.saveNewBalance(adPostModel); 
-        
+
+        this.saveNewBalance(adPostModel);
+
         return true;
     }
-    
-    /* Should make a check so user cannot go into negative balance */ 
+
+    /* Should make a check so user cannot go into negative balance */
     private void saveNewBalance(AdPostModel adPostModel) {
-        
+
         UserDAO userdao = new UserDAO();
         userdao.openConnection();
-        
-        UserBean sponsor = userdao.getUserByToken(adPostModel.getToken()); 
-        int currrentBalance = sponsor.getBalance(); 
-        currrentBalance = currrentBalance - adPostModel.getAmountToPay(); 
+
+        UserBean sponsor = userdao.getUserByToken(adPostModel.getToken());
+        int currrentBalance = sponsor.getBalance();
+        currrentBalance = currrentBalance - adPostModel.getAmountToPay();
         sponsor.setBalance(currrentBalance);
-       
+
         session.beginTransaction();
-        session.merge(sponsor); 
+        session.merge(sponsor);
         session.getTransaction().commit();
         userdao.closeConnection();
-        
+
     }
 }

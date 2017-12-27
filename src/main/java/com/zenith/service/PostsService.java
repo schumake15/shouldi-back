@@ -8,9 +8,11 @@ import com.zenith.DAO.PostDAO;
 import com.zenith.interfaces.DAO;
 import com.zenith.request.model.AdPostModel;
 import com.zenith.request.model.FlagPostModel;
+import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.PostModel;
 import com.zenith.request.model.RatingModel;
 import org.hibernate.HibernateException;
+import com.zenith.templates.PostTemplate;
 
 public class PostsService {
 
@@ -24,6 +26,15 @@ public class PostsService {
         try {
             this.database.openConnection();
             return database.getFlaggedPosts();
+        } finally {
+            database.closeConnection();
+        }
+    }
+
+    public List<PostTemplate> getMyPosts(GenericGetModel getModel) {
+        try {
+            this.database.openConnection();
+            return database.getMyPosts(getModel); 
         } finally {
             database.closeConnection();
         }
@@ -83,49 +94,40 @@ public class PostsService {
             if (database.createAd(adPostModel)) {
                 return true;
             }
-        }catch(HibernateException e) {
-        
-        e.printStackTrace();
-    }finally {
+        } catch (HibernateException e) {
+
+            e.printStackTrace();
+        } finally {
             database.closeConnection();
         }
         return false;
     }
-    
-	public void removePost(PostBean post) {
-	   	try 
-    	{
-    		this.database.openConnection();
-    		database.removePost(post);
-    	}
-    	finally
-    	{
-    		database.closeConnection();
-    	}
-	}
 
-	public void like(RatingModel rating) {
-	   	try 
-    	{
-    		this.database.openConnection();
-    		database.like(rating);
-    	}
-    	finally
-    	{
-    		database.closeConnection();
-    	}		
-	}
-	
-	public void dislike(RatingModel rating) {
-	   	try 
-    	{
-    		this.database.openConnection();
-    		database.dislike(rating);
-    	}
-    	finally
-    	{
-    		database.closeConnection();
-    	}	
-	}
+    public void removePost(PostBean post) {
+        try {
+            this.database.openConnection();
+            database.removePost(post);
+        } finally {
+            database.closeConnection();
+        }
+    }
+
+    public void like(RatingModel rating) {
+        try {
+            this.database.openConnection();
+            database.like(rating);
+        } finally {
+            database.closeConnection();
+        }
+    }
+
+    public void dislike(RatingModel rating) {
+        try {
+            this.database.openConnection();
+            database.dislike(rating);
+        } finally {
+            database.closeConnection();
+        }
+    }
 
 }
