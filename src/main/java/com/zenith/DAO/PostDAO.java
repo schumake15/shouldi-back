@@ -1,33 +1,37 @@
 package com.zenith.DAO;
 
-import ImageUtils.ImageConversionUtil;
-import com.zenith.Beans.AdvertisementBean;
+import java.sql.Blob;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
-import org.hibernate.Criteria;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
+import com.zenith.Beans.AdvertisementBean;
 import com.zenith.Beans.CommentBean;
 import com.zenith.Beans.DislikeBean;
 import com.zenith.Beans.LikeBean;
 import com.zenith.Beans.PostBean;
 import com.zenith.Beans.UserBean;
 import com.zenith.Beans.VPBean;
+import com.zenith.hibernate.utils.HibernateUtil;
 import com.zenith.hibernate.utils.HibernateUtils;
 import com.zenith.request.model.AdPostModel;
 import com.zenith.request.model.FlagPostModel;
 import com.zenith.request.model.PostModel;
 import com.zenith.request.model.RatingModel;
 
-import java.sql.Blob;
+import ImageUtils.ImageConversionUtil;
 
 public class PostDAO {
 
@@ -168,7 +172,7 @@ public class PostDAO {
 		Transaction tx=session.getTransaction();
 		try {
 			tx=session.beginTransaction();
-			delPost=(PostBean)session.get(PostBean.class, post);
+			delPost=getPostById(post.getPost_id());
 			if(delPost!=null) {
 				session.delete(delPost);
 				tx.commit();
@@ -187,17 +191,20 @@ public class PostDAO {
 
 	public void like(RatingModel rating) {
 		PostBean post=null;
-		Transaction tx=session.getTransaction();
+		Session session = HibernateUtil.getSession();
+		Transaction tx=null;
 		try {
 			tx=session.beginTransaction();
-			post=(PostBean)session.get(PostBean.class, rating.getPost());
+			post=getPostById(rating.getPost().getPost_id());
 			if(post!=null) {
-				post.getLikes().add(new LikeBean(rating.getRater(), rating.getPost()));
+				UserDAO udao= new UserDAO();
+				LikeBean like =new LikeBean(udao.getUserById(rating.getRater().getUser_id()), post);
+				
 				if(!rating.getComment().equals(""))
 				{
-					post.getPost_comments().add(new CommentBean(rating.getPost(), rating.getRater(), rating.getComment()));
+					CommentBean message= new CommentBean(post, udao.getUserById(rating.getRater().getUser_id()), rating.getComment());
 				}
-				session.save(post);
+				session.save(like);
 				tx.commit();
 			}
 		}
@@ -214,17 +221,20 @@ public class PostDAO {
 	
 	public void dislike(RatingModel rating) {
 		PostBean post=null;
-		Transaction tx=session.getTransaction();
+		Session session = HibernateUtil.getSession();
+		Transaction tx=null;
 		try {
 			tx=session.beginTransaction();
-			post=(PostBean)session.get(PostBean.class, rating.getPost());
+			post=getPostById(rating.getPost().getPost_id());
 			if(post!=null) {
-				post.getDislikes().add(new DislikeBean(rating.getRater(), rating.getPost()));
+				UserDAO udao= new UserDAO();
+				DislikeBean like =new DislikeBean(udao.getUserById(rating.getRater().getUser_id()), post);
+				
 				if(!rating.getComment().equals(""))
 				{
-					post.getPost_comments().add(new CommentBean(rating.getPost(), rating.getRater(), rating.getComment()));
+					CommentBean message= new CommentBean(post, udao.getUserById(rating.getRater().getUser_id()), rating.getComment());
 				}
-				session.save(post);
+				session.save(like);
 				tx.commit();
 			}
 		}
@@ -301,4 +311,26 @@ public class PostDAO {
         userdao.closeConnection();
         
     }
+    
+	public PostBean getPostById(int username) {
+
+		/* make sure value is not null */
+		PostBean postBean = null;
+
+		CriteriaBuilder cb = session.getCriteriaBuilder();
+
+		// create criteria against a particular persistent class
+		CriteriaQuery<PostBean> criteria = cb.createQuery(PostBean.class);
+
+		String hql = "FROM PostBean E WHERE E.post_id = " + username;
+		Query query = session.createQuery(hql);
+		List resultList = query.list();
+
+		if (resultList != null && resultList.size() > 0) {
+			postBean = (PostBean) resultList.get(0);
+
+		}
+		System.out.println(postBean);
+		return postBean;
+	}
 }

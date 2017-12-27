@@ -40,11 +40,11 @@ public class CommentDAO implements DAO {
     public List<CommentBean> getFlaggedComments() {
         session.beginTransaction();
         Criteria criteria;
-
-        List<CommentBean> flagged = session.createCriteria(CommentBean.class).list();
-
-        flagged = session.createCriteria(CommentBean.class).add(Restrictions.eq("flagged", 1)).list();
-        return flagged;
+		
+		List<CommentBean> flagged=session.createCriteria(CommentBean.class).list();
+		
+		flagged= session.createCriteria(CommentBean.class).add(Restrictions.eq("is_flagged", 1)).list();
+		return flagged;
     }
 
     public boolean flagComment(CommentModel comment) {
