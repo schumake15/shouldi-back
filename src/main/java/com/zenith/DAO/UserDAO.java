@@ -14,8 +14,8 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
 import com.zenith.Beans.UserBean;
+import com.zenith.hibernate.utils.HibernateUtil;
 import com.zenith.hibernate.utils.HibernateUtils;
-import com.zenith.interfaces.DAO;
 
 public class UserDAO {
 
@@ -53,6 +53,28 @@ public class UserDAO {
         }
     }
 
+	public UserBean getUserById(int username) {
+
+		/* make sure value is not null */
+		UserBean userBean = null;
+
+		CriteriaBuilder cb = session.getCriteriaBuilder();
+
+		// create criteria against a particular persistent class
+		CriteriaQuery<UserBean> criteria = cb.createQuery(UserBean.class);
+
+		String hql = "FROM UserBean E WHERE E.user_id = " + username;
+		Query query = session.createQuery(hql);
+		List resultList = query.list();
+
+		if (resultList != null && resultList.size() > 0) {
+			userBean = (UserBean) resultList.get(0);
+
+		}
+		System.out.println(userBean);
+		return userBean;
+	}
+	
     public UserBean getUserByToken(String token) {
 
         UserBean user = null;
@@ -107,10 +129,12 @@ public class UserDAO {
     
 	public void lockUser(UserBean user) {
 		UserBean lockUser = null;
-		Transaction tx = session.getTransaction();
+		System.out.println(session.createCriteria(UserBean.class).add(Restrictions.eq("user_id", user.getUser_id())));
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
-			lockUser = (UserBean) session.get(UserBean.class, user);
+			lockUser = (UserBean)session.createCriteria(UserBean.class).add(Restrictions.eq("user_id", user.getUser_id())).list().get(0);
 			if (lockUser != null) {
 				lockUser.setLock(1);
 				session.save(lockUser);
