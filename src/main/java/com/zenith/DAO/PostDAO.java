@@ -36,10 +36,8 @@ import com.google.gson.Gson;
 import com.zenith.Beans.AdvertisementBean;
 import java.sql.Blob;
 import com.zenith.ImageUtils.ImageConversionUtil;
+import com.zenith.templates.AdPostTemplate;
 import com.zenith.templates.PostTemplate;
-
-
-
 
 public class PostDAO {
 
@@ -56,30 +54,51 @@ public class PostDAO {
         }
     }
 
+    public List<AdPostTemplate> adGetMyPosts(GenericGetModel getModel) {
+
+        String token = getModel.getToken();
+        UserServiceImpl service = new UserServiceImpl();
+        UserBean userBean = service.getUserByToken(token);
+
+        /* Need to hold posts temporarily */
+        List<AdvertisementBean> ads = userBean.getAds(); 
+        if(!ads.isEmpty())
+            System.out.println("THE USER HAS ADS");
+        /* All posts will be converted to a PostTemplate */
+        List<AdPostTemplate> postTemplate = new ArrayList<AdPostTemplate>();
+        String image;
+        for (AdvertisementBean adBean : ads) {
+            System.out.println("THE USER HAS ADS");
+            image = ImageConversionUtil.convertToB64(adBean.getImage());
+            postTemplate.add(new AdPostTemplate(adBean.getNum_clicked(), adBean.getNum_shown(), image));  
+        }
+        return postTemplate; 
+    }
+
     public List<PostTemplate> getMyPosts(GenericGetModel getModel) {
         String token = getModel.getToken();
         UserServiceImpl service = new UserServiceImpl();
         UserBean userBean = service.getUserByToken(token);
-        
-        /* Need to hold posts temporarily */ 
+
+        /* Need to hold posts temporarily */
         List<PostBean> temp = new ArrayList<PostBean>();
-        /* All posts will be converted to a PostTemplate */ 
+        /* All posts will be converted to a PostTemplate */
         List<PostTemplate> postTemplate = new ArrayList<PostTemplate>();
-        /* Comments for every post */ 
-        List<String> comments = new ArrayList<String>(); 
-        
-        /* Image needs to be converted to proper format for each post */ 
-        String image; 
+        /* Comments for every post */
+        List<String> comments = new ArrayList<String>();
+
+        /* Image needs to be converted to proper format for each post */
+        String image;
         temp = userBean.getUser_posts();
         for (PostBean bean : temp) {
-            image = ImageConversionUtil.convertToB64(bean.getImage()); 
-            List<CommentBean> commentBean = bean.getPost_comments(); 
+            image = ImageConversionUtil.convertToB64(bean.getImage());
+            List<CommentBean> commentBean = bean.getPost_comments();
             for (CommentBean comment : commentBean) {
-                comments.add(comment.getComment_text()); 
+                comments.add(comment.getComment_text());
             }
-            postTemplate.add(new PostTemplate(bean.getPost_id(), bean.getLikes().size(), image, bean.getDislikes().size(), comments)); 
+            postTemplate.add(new PostTemplate(bean.getPost_id(), bean.getLikes().size(), image, bean.getDislikes().size(), comments));
         }
-        return postTemplate; 
+        return postTemplate;
     }
 
     public List<PostBean> getFlaggedPosts() {
@@ -203,7 +222,6 @@ public class PostDAO {
         return true;
     }
 
-
     public void removePost(PostBean post) {
         PostBean delPost = null;
         Transaction tx = session.getTransaction();
@@ -272,7 +290,6 @@ public class PostDAO {
         }
     }
 
-
     public boolean flagPost(FlagPostModel flagPostModel) {
 
         int post_id = flagPostModel.getPostID();
@@ -335,26 +352,26 @@ public class PostDAO {
         userdao.closeConnection();
 
     }
-    
-	public PostBean getPostById(int username) {
 
-		/* make sure value is not null */
-		PostBean postBean = null;
+    public PostBean getPostById(int username) {
 
-		CriteriaBuilder cb = session.getCriteriaBuilder();
+        /* make sure value is not null */
+        PostBean postBean = null;
 
-		// create criteria against a particular persistent class
-		CriteriaQuery<PostBean> criteria = cb.createQuery(PostBean.class);
+        CriteriaBuilder cb = session.getCriteriaBuilder();
 
-		String hql = "FROM PostBean E WHERE E.post_id = " + username;
-		Query query = session.createQuery(hql);
-		List resultList = query.list();
+        // create criteria against a particular persistent class
+        CriteriaQuery<PostBean> criteria = cb.createQuery(PostBean.class);
 
-		if (resultList != null && resultList.size() > 0) {
-			postBean = (PostBean) resultList.get(0);
+        String hql = "FROM PostBean E WHERE E.post_id = " + username;
+        Query query = session.createQuery(hql);
+        List resultList = query.list();
 
-		}
-		System.out.println(postBean);
-		return postBean;
-	}
+        if (resultList != null && resultList.size() > 0) {
+            postBean = (PostBean) resultList.get(0);
+
+        }
+        System.out.println(postBean);
+        return postBean;
+    }
 }

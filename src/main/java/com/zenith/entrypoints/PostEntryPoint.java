@@ -21,6 +21,7 @@ import com.zenith.service.CommentService;
 import com.zenith.service.PostsService;
 import com.zenith.service.UserServiceImpl;
 import com.zenith.service.VerifyTokenCredentials;
+import com.zenith.templates.AdPostTemplate;
 import com.zenith.user.response.GenericSuccessOrFailureMessage;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -39,7 +40,7 @@ public class PostEntryPoint {
     public List<PostBean> getFlaggedPosts() {
         PostsService service = new PostsService();
         return service.getFlaggedPosts();
-    }
+    } 
 
     @POST
     @Path("/my/posts")
@@ -72,6 +73,15 @@ public class PostEntryPoint {
         /* Toggles message from success to failure */
         message.toggleMessage();
         return message;
+    }
+    
+    @POST
+    @Path("ad/my/posts")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<AdPostTemplate> adGetMyPosts(GenericGetModel getModel) {
+        PostsService service = new PostsService();
+        return service.adGetMyPosts(getModel); 
     }
 
     @POST

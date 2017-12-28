@@ -89,6 +89,14 @@
 	Back-end happy path response: {"messages":[list of messages]} 
 	Back-end bad path response: {} // empty json
 
+***TESTED***
+12. Get advertisements
+	HTTP request type: POST
+	Path: api/posts/ad/my/posts
+	Front-end request: {"token":""}
+	Back-end happy path response: [{"image":, "numberOfClicks":, "timesViewed":}, {"image":, "numberOfClicks":, "timesViewed":}, {"image":, "numberOfClicks":, "timesViewed":}] 
+	Back-end bad path response: {} // empty json
+
 
 	
 	
