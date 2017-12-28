@@ -21,8 +21,11 @@ import com.zenith.ImageUtils.ImageConversionUtil;
 import com.zenith.hibernate.utils.HibernateUtil;
 import com.zenith.hibernate.utils.HibernateUtils;
 import com.zenith.request.model.GenericGetModel;
+
 import com.zenith.templates.PostTemplate;
 import com.zenith.templates.UserTemplate;
+
+
 
 public class UserDAO {
 
@@ -37,6 +40,13 @@ public class UserDAO {
         if (session != null) {
             session.close();
         }
+    }
+    
+    public int getUserScore(GenericGetModel requestModel){
+        this.openConnection();
+        UserBean user = this.getUserByToken(requestModel.getToken()); 
+        this.closeConnection();
+        return user.getScore(); 
     }
 
     public UserBean getUserByEmail(String email) {
@@ -153,15 +163,15 @@ public class UserDAO {
     
 	public void lockUser(GenericGetModel user) {
 		UserBean lockUser = null;
-		System.out.println(session.createCriteria(UserBean.class).add(Restrictions.eq("user_id", user.getUser_id())));
+		UserBean u=getUserByToken(user.getToken());
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
-			lockUser = (UserBean)session.createCriteria(UserBean.class).add(Restrictions.eq("user_id", user.getUser_id())).list().get(0);
-			if (lockUser != null) {
-				lockUser.setLock(1);
-				session.save(lockUser);
+			//lockUser = (UserBean)session.createCriteria(UserBean.class).add(Restrictions.eq("user_id", user.getUser_id())).list().get(0);
+			if (u != null) {
+				u.setLock(1);
+				session.save(u);
 				tx.commit();
 			}
 		} catch (HibernateException e) {

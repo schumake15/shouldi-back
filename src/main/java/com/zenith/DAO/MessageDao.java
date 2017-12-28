@@ -13,16 +13,21 @@ import com.zenith.hibernate.utils.HibernateUtil;
 import com.zenith.hibernate.utils.HibernateUtils;
 import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.MessageModel;
+
 import com.zenith.templates.MessageTemplate;
 
-public class MessageDao {
-	 Session session = null;
-	 
-	    public void openConnection() {
-	        SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
-	        session = sessionFactory.openSession();
-	    }
+import java.util.ArrayList;
+import java.util.List;
 
+public class MessageDao {
+
+    Session session = null;
+
+    public void openConnection() {
+        SessionFactory sessionFactory = HibernateUtils.getSessionFactory();
+        session = sessionFactory.openSession();
+    }
+	
 	    public void closeConnection() {
 	        if (session != null) {
 	            session.close();
@@ -51,4 +56,24 @@ public class MessageDao {
 	        }
 	        return myMessages;
 	}
+
+
+    
+    public List<String> getMyMessages(GenericGetModel getModel){
+        UserDAO userDAO = new UserDAO();
+        userDAO.openConnection();
+        UserBean userBean = userDAO.getUserByToken(getModel.getToken()); 
+        List<MessageBean> messages = userBean.getMessages(); 
+        
+        List<String> userMessages = new ArrayList<String>(); 
+        for (MessageBean message : messages) {
+            userMessages.add(message.getContent()); 
+        }
+        
+        userDAO.closeConnection();
+        return userMessages; 
+        
+    }
+    
+    
 }

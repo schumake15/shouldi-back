@@ -64,8 +64,21 @@ public class UserServiceImpl implements UserService {
     
     public UserBean getUserByToken(String token) {
         this.database.openConnection();
-     
-        return this.database.getUserByToken(token); 
+        try {
+            return this.database.getUserByToken(token);
+        } finally {
+            this.database.closeConnection();
+        }
+         
+    }
+    
+    public int getUserScore(GenericGetModel requestModel) {
+        try {
+            database.openConnection();
+            return database.getUserScore(requestModel); 
+        } finally {
+            database.closeConnection();
+        }
     }
 
     private UserBean getUserByEmail(String email) {

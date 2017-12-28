@@ -29,4 +29,5 @@ public class MessageService {
             database.closeConnection();
         }
 	}
+
 }
