@@ -1,10 +1,6 @@
 package com.zenith.DAO;
 
-<<<<<<< HEAD
-
-=======
 import java.sql.Blob;
->>>>>>> 60263cc02826f91a9ce41d88a0d2c502dc330d18
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -36,7 +32,11 @@ import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.PostModel;
 import com.zenith.request.model.RatingModel;
 import com.zenith.service.UserServiceImpl;
-
+import com.google.gson.Gson;
+import com.zenith.Beans.AdvertisementBean;
+import java.sql.Blob;
+import com.zenith.ImageUtils.ImageConversionUtil;
+import com.zenith.templates.PostTemplate;
 
 
 
