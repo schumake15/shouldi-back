@@ -16,6 +16,7 @@ import org.hibernate.criterion.Restrictions;
 import com.zenith.Beans.UserBean;
 import com.zenith.hibernate.utils.HibernateUtil;
 import com.zenith.hibernate.utils.HibernateUtils;
+import com.zenith.request.model.GenericGetModel;
 
 public class UserDAO {
 
@@ -30,6 +31,13 @@ public class UserDAO {
         if (session != null) {
             session.close();
         }
+    }
+    
+    public int getUserScore(GenericGetModel requestModel){
+        this.openConnection();
+        UserBean user = this.getUserByToken(requestModel.getToken()); 
+        this.closeConnection();
+        return user.getScore(); 
     }
 
     public UserBean getUserByEmail(String email) {
