@@ -24,7 +24,7 @@ import com.zenith.Beans.LikeBean;
 import com.zenith.Beans.PostBean;
 import com.zenith.Beans.UserBean;
 import com.zenith.Beans.VPBean;
-import com.zenith.hibernate.utils.HibernateUtil;
+import com.zenith.ImageUtils.ImageConversionUtil;
 import com.zenith.hibernate.utils.HibernateUtils;
 import com.zenith.request.model.AdPostModel;
 import com.zenith.request.model.FlagPostModel;
@@ -32,10 +32,6 @@ import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.PostModel;
 import com.zenith.request.model.RatingModel;
 import com.zenith.service.UserServiceImpl;
-import com.google.gson.Gson;
-import com.zenith.Beans.AdvertisementBean;
-import java.sql.Blob;
-import com.zenith.ImageUtils.ImageConversionUtil;
 import com.zenith.templates.PostTemplate;
 
 
@@ -82,14 +78,23 @@ public class PostDAO {
         return postTemplate; 
     }
 
-    public List<PostBean> getFlaggedPosts() {
+    public List<PostTemplate> getFlaggedPosts() {
 
         session.beginTransaction();
-
+        List<String> comments = new ArrayList<String>(); 
         List<PostBean> flagged = session.createCriteria(PostBean.class).list();
-
         flagged = session.createCriteria(PostBean.class).add(Restrictions.eq("flagged", 1)).list();
-        return flagged;
+        List<PostTemplate> templates=new ArrayList<PostTemplate>();
+        for(PostBean post: flagged)
+        {
+        	String image = ImageConversionUtil.convertToB64(post.getImage());
+            List<CommentBean> commentBean = post.getPost_comments(); 
+            for (CommentBean comment : commentBean) {
+                comments.add(comment.getComment_text()); 
+            }
+            templates.add(new PostTemplate(post.getPost_id(), post.getLikes().size(), image, post.getDislikes().size(), comments)); 
+        }
+        return templates;
     }
 
     public PostBean getBestEventPost(int event) {
@@ -288,6 +293,9 @@ public class PostDAO {
             session.beginTransaction();
             PostBean postBean = (PostBean) posts.get(0);
             postBean.setFlag(1);
+            UserBean user=postBean.getPoster();
+            user.setFlag(1);
+            session.save(user);
             session.update(postBean);
             session.getTransaction().commit();
             return true;

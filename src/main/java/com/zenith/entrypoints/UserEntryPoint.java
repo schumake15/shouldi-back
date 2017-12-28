@@ -5,8 +5,7 @@
  */
 package com.zenith.entrypoints;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -15,18 +14,19 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.zenith.Beans.UserBean;
-import com.zenith.service.UserServiceImpl;
 import com.zenith.interfaces.UserService;
 import com.zenith.request.model.UserLoginModel;
 import com.zenith.request.model.UserSignUpModel;
 import com.zenith.service.UserServiceImpl;
 import com.zenith.session.Token;
+import com.zenith.templates.UserTemplate;
 import com.zenith.user.response.FavoriteUserWrapper;
 import com.zenith.user.response.GenericSuccessOrFailureMessage;
-import java.util.ArrayList;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Response;
 
 
 /**
@@ -58,7 +58,7 @@ public class UserEntryPoint {
 			.entity(success).build(); 
 			
     }
-
+    //only need emails of favorites
     @GET
     @Path("/favorites")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -67,8 +67,8 @@ public class UserEntryPoint {
         UserService userService = new UserServiceImpl();
         FavoriteUserWrapper wrapper = new FavoriteUserWrapper(); 
         List<String> temp = new ArrayList<String>(); 
-        List<UserBean> users = userService.getFavoriteUsers(); 
-        for(UserBean user : users){
+        List<UserTemplate> users = userService.getFavoriteUsers(); 
+        for(UserTemplate user : users){
             temp.add(user.getEmail()); 
         }
         
@@ -78,6 +78,19 @@ public class UserEntryPoint {
         return Response.ok(json).build(); 
     }
 
+    //only need emails of favorites
+    @GET
+    @Path("/flagged")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getFlaggedUsers() {
+        UserServiceImpl userService = new UserServiceImpl();
+        List<UserTemplate> users = userService.getFlaggedUsers();        
+        Gson gson = new GsonBuilder().create();
+        String json = gson.toJson(users); 
+        return Response.ok(json).build(); 
+    }
+    
     @POST
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)

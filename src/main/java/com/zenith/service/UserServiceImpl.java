@@ -5,20 +5,17 @@
  */
 package com.zenith.service;
 
-import com.zenith.DAO.OracleDB;
+import java.util.List;
+
 import com.zenith.Beans.UserBean;
 import com.zenith.DAO.UserDAO;
 import com.zenith.exceptions.RecordAlreadyExistsException;
 import com.zenith.exceptions.UserDoesNotExistException;
-import com.zenith.interfaces.DAO;
 import com.zenith.interfaces.UserService;
 import com.zenith.request.model.UserLoginModel;
 import com.zenith.request.model.UserSignUpModel;
+import com.zenith.templates.UserTemplate;
 import com.zenith.user.response.ErrorMessages;
-
-import java.util.List;
-
-import org.springframework.beans.BeanUtils;
 
 /**
  *
@@ -118,10 +115,19 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    public List<UserBean> getFavoriteUsers() {
+    public List<UserTemplate> getFavoriteUsers() {
         try {
             this.database.openConnection();
             return database.getFavoriteUsers();
+        } finally {
+            database.closeConnection();
+        }
+    }
+    
+    public List<UserTemplate> getFlaggedUsers() {
+        try {
+            this.database.openConnection();
+            return database.getFlaggedUsers();
         } finally {
             database.closeConnection();
         }

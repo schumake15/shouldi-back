@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.zenith.Beans.UserBean;
 import com.zenith.request.model.UserSignUpModel;
+import com.zenith.templates.UserTemplate;
 
 /**
  *
@@ -18,6 +19,6 @@ public interface UserService {
 
     public UserBean createUser(UserSignUpModel requestObject);
 
-    public List<UserBean> getFavoriteUsers();
+    public List<UserTemplate> getFavoriteUsers();
 
 }
