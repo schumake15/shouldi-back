@@ -63,15 +63,14 @@ public class PostDAO {
 
         /* Need to hold posts temporarily */
         List<AdvertisementBean> ads = userBean.getAds(); 
-        if(!ads.isEmpty())
-            System.out.println("THE USER HAS ADS");
+
         /* All posts will be converted to a PostTemplate */
         List<AdPostTemplate> postTemplate = new ArrayList<AdPostTemplate>();
         String image;
         for (AdvertisementBean adBean : ads) {
-            System.out.println("THE USER HAS ADS");
+            
             image = ImageConversionUtil.convertToB64(adBean.getImage());
-           // postTemplate.add(new AdPostTemplate(adBean.getNum_clicked(), adBean.getNum_shown(), image));  
+    
         }
         return postTemplate; 
     }

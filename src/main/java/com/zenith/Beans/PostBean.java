@@ -251,7 +251,7 @@ public class PostBean implements Serializable, Comparable<PostBean> {
     }
 
 	public int compareTo(PostBean post) {
-		if(String.sort(this.occasion.toLowerCase(),post.getOccasion().toLowerCase()))
+//		if(String.sort(this.occasion.toLowerCase(),post.getOccasion().toLowerCase()))
 		return 0;
 	}
 
