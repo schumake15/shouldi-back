@@ -74,7 +74,7 @@
 	Back-end bad path response: {"message":"failure"}
 
 ***TESTED***
-10. Post ad
+10. Get all user posts
 	HTTP request type: POST
 	Path: api/posts/my/posts
 	Front-end request: {"token":""}
