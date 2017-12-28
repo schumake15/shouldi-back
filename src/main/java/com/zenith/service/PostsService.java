@@ -11,6 +11,7 @@ import com.zenith.request.model.FlagPostModel;
 import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.PostModel;
 import com.zenith.request.model.RatingModel;
+import com.zenith.templates.AdPostTemplate;
 import org.hibernate.HibernateException;
 import com.zenith.templates.PostTemplate;
 
@@ -128,6 +129,16 @@ public class PostsService {
         } finally {
             database.closeConnection();
         }
+    }
+    
+        public List<AdPostTemplate> adGetMyPosts(GenericGetModel getModel) {
+        try {
+            this.database.openConnection();
+            return database.adGetMyPosts(getModel); 
+        } finally {
+            database.closeConnection();
+        }
+        
     }
 
 }
