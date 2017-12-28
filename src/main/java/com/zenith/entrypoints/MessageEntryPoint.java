@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.zenith.Beans.UserBean;
+import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.MessageModel;
 import com.zenith.service.MessageService;
 
@@ -28,7 +28,7 @@ public class MessageEntryPoint {
     @Path("/user")
     @Consumes(MediaType.APPLICATION_JSON) // our method consumes or takes in json data
     @Produces({MediaType.APPLICATION_JSON})
-    public Response getUserMessages(UserBean user) {
+    public Response getUserMessages(GenericGetModel user) {
     	MessageService service = new MessageService(); 	    	
         Gson gson = new GsonBuilder().create();
         String json = gson.toJson(service.getUserMessages(user)); 

@@ -11,6 +11,7 @@ import com.zenith.Beans.MessageBean;
 import com.zenith.Beans.UserBean;
 import com.zenith.hibernate.utils.HibernateUtil;
 import com.zenith.hibernate.utils.HibernateUtils;
+import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.MessageModel;
 import com.zenith.templates.MessageTemplate;
 
@@ -37,14 +38,15 @@ public class MessageDao {
 		tx.commit();
 	}
 	
-	public List<MessageTemplate> getUserMessages(UserBean user) {
+	public List<MessageTemplate> getUserMessages(GenericGetModel user) {
 	       session.beginTransaction();
-
+	       UserDAO dao= new UserDAO();
 	        List<MessageBean> messages = session.createCriteria(MessageBean.class).list();
 	        List<MessageTemplate> myMessages = new ArrayList<MessageTemplate>();
+	        UserBean commenter= dao.getUserByToken(user.getToken());
 	        for(MessageBean message: messages)
 	        {
-	        	if(message.getTo().getUser_id()==user.getUser_id())
+	        	if(message.getTo().getUser_id()==commenter.getUser_id())
 	        		myMessages.add(new MessageTemplate(message.getTo().getUsername(), message.getFrom().getUsername(), message.getContent()));
 	        }
 	        return myMessages;

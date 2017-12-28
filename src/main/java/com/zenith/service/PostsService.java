@@ -2,16 +2,16 @@ package com.zenith.service;
 
 import java.util.List;
 
+import org.hibernate.HibernateException;
+
 import com.zenith.Beans.PostBean;
-import com.zenith.Beans.UserBean;
 import com.zenith.DAO.PostDAO;
-import com.zenith.interfaces.DAO;
 import com.zenith.request.model.AdPostModel;
 import com.zenith.request.model.FlagPostModel;
+import com.zenith.request.model.GenderedGetModel;
 import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.PostModel;
 import com.zenith.request.model.RatingModel;
-import org.hibernate.HibernateException;
 import com.zenith.templates.PostTemplate;
 
 public class PostsService {
@@ -22,7 +22,7 @@ public class PostsService {
         this.database = new PostDAO();
     }
 
-    public List<PostBean> getFlaggedPosts() {
+    public List<PostTemplate> getFlaggedPosts() {
         try {
             this.database.openConnection();
             return database.getFlaggedPosts();
@@ -40,7 +40,7 @@ public class PostsService {
         }
     }
 
-    public PostBean getUnseenPost(UserBean user) {
+    public List<PostTemplate> getUnseenPost(GenericGetModel user) {
         try {
             this.database.openConnection();
             return database.getUnseenPost(user);
@@ -49,10 +49,10 @@ public class PostsService {
         }
     }
 
-    public PostBean getUnseenPostGendered(UserBean user, String gender) {
+    public List<PostTemplate> getUnseenPostGendered(GenderedGetModel request) {
         try {
             this.database.openConnection();
-            return database.getUnseenPostGendered(user, gender);
+            return database.getUnseenPostGendered(request);
         } finally {
             database.closeConnection();
         }

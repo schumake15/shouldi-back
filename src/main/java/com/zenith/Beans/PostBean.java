@@ -29,7 +29,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @Entity
 @XmlRootElement
 @Table(name = "Posts")
-public class PostBean implements Serializable {
+public class PostBean implements Serializable, Comparable<PostBean> {
 
     @Id //designates as primary key
     @Column(name = "POST_ID")
@@ -249,5 +249,10 @@ public class PostBean implements Serializable {
     public void setImage(Blob image) {
         this.image = image;
     }
+
+	public int compareTo(PostBean post) {
+		if(String.sort(this.occasion.toLowerCase(),post.getOccasion().toLowerCase()))
+		return 0;
+	}
 
 }

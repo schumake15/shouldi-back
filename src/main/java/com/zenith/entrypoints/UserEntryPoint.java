@@ -115,7 +115,7 @@ public class UserEntryPoint {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("/lock")
-	public void lockUser(UserBean user)
+	public void lockUser(GenericGetModel user)
 	{
 		UserServiceImpl service= new UserServiceImpl();
 		service.lockUser(user);

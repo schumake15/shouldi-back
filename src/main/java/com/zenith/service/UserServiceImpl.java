@@ -12,6 +12,7 @@ import com.zenith.DAO.UserDAO;
 import com.zenith.exceptions.RecordAlreadyExistsException;
 import com.zenith.exceptions.UserDoesNotExistException;
 import com.zenith.interfaces.UserService;
+import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.UserLoginModel;
 import com.zenith.request.model.UserSignUpModel;
 import com.zenith.templates.UserTemplate;
@@ -133,7 +134,7 @@ public class UserServiceImpl implements UserService {
         }
     }
     
-	public void lockUser(UserBean user) {
+	public void lockUser(GenericGetModel user) {
     	try 
     	{
     		this.database.openConnection();

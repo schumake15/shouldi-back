@@ -232,6 +232,7 @@ public class UserBean implements Serializable {
         this.gender = gender;
         this.role = role; 
         this.lock = lock;
+        this.flag=0;
         this.user_posts = user_posts;
         this.viewed_posts = viewed_posts;
         this.messages = messages;
@@ -254,6 +255,7 @@ public class UserBean implements Serializable {
         this.gender = gender;
         this.role = role;
         this.lock = lock;
+        this.flag=0;
         this.user_posts = user_posts;
         this.viewed_posts = viewed_posts;
         this.messages = messages;

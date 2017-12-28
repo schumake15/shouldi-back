@@ -2,8 +2,8 @@ package com.zenith.service;
 
 import java.util.List;
 
-import com.zenith.Beans.UserBean;
 import com.zenith.DAO.MessageDao;
+import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.MessageModel;
 import com.zenith.templates.MessageTemplate;
 
@@ -20,7 +20,7 @@ public class MessageService {
 		
 	}
 	
-	public List<MessageTemplate> getUserMessages(UserBean user)
+	public List<MessageTemplate> getUserMessages(GenericGetModel user)
 	{
         try {
             this.database.openConnection();
@@ -28,6 +28,5 @@ public class MessageService {
         } finally {
             database.closeConnection();
         }
-    }
 	}
 }

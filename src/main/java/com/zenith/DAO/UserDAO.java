@@ -20,6 +20,7 @@ import com.zenith.Beans.UserBean;
 import com.zenith.ImageUtils.ImageConversionUtil;
 import com.zenith.hibernate.utils.HibernateUtil;
 import com.zenith.hibernate.utils.HibernateUtils;
+import com.zenith.request.model.GenericGetModel;
 import com.zenith.templates.PostTemplate;
 import com.zenith.templates.UserTemplate;
 
@@ -150,7 +151,7 @@ public class UserDAO {
 
     }
     
-	public void lockUser(UserBean user) {
+	public void lockUser(GenericGetModel user) {
 		UserBean lockUser = null;
 		System.out.println(session.createCriteria(UserBean.class).add(Restrictions.eq("user_id", user.getUser_id())));
 		Session session = HibernateUtil.getSession();

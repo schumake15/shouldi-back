@@ -53,7 +53,31 @@ public class AdvertisementBean implements Serializable {
         this.ad_id = ad_id;
     }
 
-    public UserBean getSponsor() {
+    public Blob getImage() {
+		return image;
+	}
+
+	public void setImage(Blob image) {
+		this.image = image;
+	}
+
+	public String getNum_clicked() {
+		return num_clicked;
+	}
+
+	public void setNum_clicked(String num_clicked) {
+		this.num_clicked = num_clicked;
+	}
+
+	public String getNum_shown() {
+		return num_shown;
+	}
+
+	public void setNum_shown(String num_shown) {
+		this.num_shown = num_shown;
+	}
+
+	public UserBean getSponsor() {
         return Sponsor;
     }
 
