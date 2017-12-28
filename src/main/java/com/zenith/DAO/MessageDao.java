@@ -5,6 +5,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import com.zenith.Beans.MessageBean;
+import com.zenith.hibernate.utils.HibernateUtil;
 import com.zenith.hibernate.utils.HibernateUtils;
 import com.zenith.request.model.MessageModel;
 
@@ -23,7 +24,9 @@ public class MessageDao {
 	    }
 	    
 	public void sendMessage(MessageModel message) {
-		Transaction tx = session.beginTransaction();
+		Session session = HibernateUtil.getSession();
+		Transaction tx = null;
+		tx = session.beginTransaction();
 		MessageBean mail= new MessageBean(message.getTo(), message.getFrom(), message.getContent());
 		session.save(mail);
 		tx.commit();

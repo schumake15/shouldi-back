@@ -1,27 +1,34 @@
 package com.zenith.DAO;
 
-import com.zenith.ImageUtils.ImageConversionUtil;
-import com.google.gson.Gson;
-import com.zenith.Beans.AdvertisementBean;
+<<<<<<< HEAD
+
+=======
+import java.sql.Blob;
+>>>>>>> 60263cc02826f91a9ce41d88a0d2c502dc330d18
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
-import org.hibernate.Criteria;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
+import com.zenith.Beans.AdvertisementBean;
 import com.zenith.Beans.CommentBean;
 import com.zenith.Beans.DislikeBean;
 import com.zenith.Beans.LikeBean;
 import com.zenith.Beans.PostBean;
 import com.zenith.Beans.UserBean;
 import com.zenith.Beans.VPBean;
+import com.zenith.hibernate.utils.HibernateUtil;
 import com.zenith.hibernate.utils.HibernateUtils;
 import com.zenith.request.model.AdPostModel;
 import com.zenith.request.model.FlagPostModel;
@@ -30,8 +37,9 @@ import com.zenith.request.model.PostModel;
 import com.zenith.request.model.RatingModel;
 import com.zenith.service.UserServiceImpl;
 
-import java.sql.Blob;
-import com.zenith.templates.PostTemplate;
+
+
+
 
 public class PostDAO {
 
@@ -195,6 +203,7 @@ public class PostDAO {
         return true;
     }
 
+
     public void removePost(PostBean post) {
         PostBean delPost = null;
         Transaction tx = session.getTransaction();
@@ -263,6 +272,7 @@ public class PostDAO {
         }
     }
 
+
     public boolean flagPost(FlagPostModel flagPostModel) {
 
         int post_id = flagPostModel.getPostID();
@@ -325,4 +335,26 @@ public class PostDAO {
         userdao.closeConnection();
 
     }
+    
+	public PostBean getPostById(int username) {
+
+		/* make sure value is not null */
+		PostBean postBean = null;
+
+		CriteriaBuilder cb = session.getCriteriaBuilder();
+
+		// create criteria against a particular persistent class
+		CriteriaQuery<PostBean> criteria = cb.createQuery(PostBean.class);
+
+		String hql = "FROM PostBean E WHERE E.post_id = " + username;
+		Query query = session.createQuery(hql);
+		List resultList = query.list();
+
+		if (resultList != null && resultList.size() > 0) {
+			postBean = (PostBean) resultList.get(0);
+
+		}
+		System.out.println(postBean);
+		return postBean;
+	}
 }
