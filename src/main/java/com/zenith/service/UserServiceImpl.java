@@ -12,6 +12,7 @@ import com.zenith.exceptions.RecordAlreadyExistsException;
 import com.zenith.exceptions.UserDoesNotExistException;
 import com.zenith.interfaces.DAO;
 import com.zenith.interfaces.UserService;
+import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.UserLoginModel;
 import com.zenith.request.model.UserSignUpModel;
 import com.zenith.user.response.ErrorMessages;
@@ -66,8 +67,21 @@ public class UserServiceImpl implements UserService {
     
     public UserBean getUserByToken(String token) {
         this.database.openConnection();
-     
-        return this.database.getUserByToken(token); 
+        try {
+            return this.database.getUserByToken(token);
+        } finally {
+            this.database.closeConnection();
+        }
+         
+    }
+    
+    public int getUserScore(GenericGetModel requestModel) {
+        try {
+            database.openConnection();
+            return database.getUserScore(requestModel); 
+        } finally {
+            database.closeConnection();
+        }
     }
 
     private UserBean getUserByEmail(String email) {

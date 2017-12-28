@@ -18,12 +18,14 @@ import javax.ws.rs.core.MediaType;
 import com.zenith.Beans.UserBean;
 import com.zenith.service.UserServiceImpl;
 import com.zenith.interfaces.UserService;
+import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.UserLoginModel;
 import com.zenith.request.model.UserSignUpModel;
 import com.zenith.service.UserServiceImpl;
 import com.zenith.session.Token;
 import com.zenith.user.response.FavoriteUserWrapper;
 import com.zenith.user.response.GenericSuccessOrFailureMessage;
+import com.zenith.user.response.ScoreWrapper;
 import java.util.ArrayList;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
@@ -77,6 +79,20 @@ public class UserEntryPoint {
         String json = gson.toJson(wrapper); 
         return Response.ok(json).build(); 
     }
+    
+    @POST
+    @Path("/score")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getUserScore(GenericGetModel requestModel) {
+        UserServiceImpl userService = new UserServiceImpl(); 
+        
+        ScoreWrapper wrapper = new ScoreWrapper(userService.getUserByToken(requestModel.getToken()).getScore()); 
+        
+        Gson gson = new GsonBuilder().create();
+        String json = gson.toJson(wrapper);
+       return Response.ok(json).build(); 
+               }
 
     @POST
     @Path("/login")
