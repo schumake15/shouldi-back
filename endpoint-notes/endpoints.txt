@@ -79,7 +79,15 @@
 	Path: api/posts/my/posts
 	Front-end request: {"token":""}
 	Back-end happy path response: [{"comments":[], "dislikes":0, "images":"b64 data", "likes":0, "post_id":"id"}]  
-	Back-end bad path response: {"message":"failure"}
+	Back-end bad path response: {""} // empty json
+
+***TESTED***
+11. Get all messages
+	HTTP request type: POST
+	Path: api/messages/my/messages
+	Front-end request: {"token":""}
+	Back-end happy path response: {"messages":[list of messages]} 
+	Back-end bad path response: {} // empty json
 
 
 	
