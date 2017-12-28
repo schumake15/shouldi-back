@@ -35,7 +35,11 @@ public class PostTemplate {
         this.comments = comments;
       
     }
-    /**
+    public PostTemplate(int post_id, String image) {
+        this.post_id = post_id;
+        this.image = image;
+	}
+	/**
      * @return the post_id
      */
     public int getPost_id() {

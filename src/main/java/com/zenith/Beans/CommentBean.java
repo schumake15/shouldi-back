@@ -23,6 +23,46 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Table(name = "Comments")
 public class CommentBean implements Serializable {
 
+
+
+    @Id //designates as primary key
+    @Column(name = "COMMENT_ID")
+    @SequenceGenerator(sequenceName = "COMMENT_SEQ", name = "COMMENT_SEQ")
+    @GeneratedValue(generator = "COMMENT_SEQ", strategy = GenerationType.SEQUENCE)
+    private int comment_id;
+
+    /* Maps to user comments */
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserBean commentor;
+
+    @Column(name = "is_flagged")
+    private int isFlagged;
+
+    /* Link to Posts */
+    @ManyToOne
+    @JoinColumn(name = "POST_ID")
+    private PostBean postBean;
+
+    @Column(name = "COMMENT_TEXT")
+    private String comment_text;
+
+    public int getComment_id() {
+        return comment_id;
+    }
+
+    public void setComment_id(int comment_id) {
+        this.comment_id = comment_id;
+    }
+
+    public String getComment_text() {
+        return comment_text;
+    }
+
+    public void setComment_text(String comment_text) {
+        this.comment_text = comment_text;
+    }
+    
     /**
      * @return the commentor
      */
@@ -63,44 +103,6 @@ public class CommentBean implements Serializable {
      */
     public void setPostBean(PostBean postBean) {
         this.postBean = postBean;
-    }
-
-    @Id //designates as primary key
-    @Column(name = "COMMENT_ID")
-    @SequenceGenerator(sequenceName = "COMMENT_SEQ", name = "COMMENT_SEQ")
-    @GeneratedValue(generator = "COMMENT_SEQ", strategy = GenerationType.SEQUENCE)
-    private int comment_id;
-
-    /* Maps to user comments */
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserBean commentor;
-
-    @Column(name = "is_flagged")
-    private int isFlagged;
-
-    /* Link to Posts */
-    @ManyToOne
-    @JoinColumn(name = "POST_ID")
-    private PostBean postBean;
-
-    @Column(name = "COMMENT_TEXT")
-    private String comment_text;
-
-    public int getComment_id() {
-        return comment_id;
-    }
-
-    public void setComment_id(int comment_id) {
-        this.comment_id = comment_id;
-    }
-
-    public String getComment_text() {
-        return comment_text;
-    }
-
-    public void setComment_text(String comment_text) {
-        this.comment_text = comment_text;
     }
 
     public CommentBean(int comment_id, PostBean postBean, UserBean commenter, String comment_text) {

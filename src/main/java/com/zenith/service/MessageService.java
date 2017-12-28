@@ -1,29 +1,33 @@
 package com.zenith.service;
 
-import com.zenith.Beans.MessageBean;
+import java.util.List;
+
 import com.zenith.DAO.MessageDao;
 import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.MessageModel;
-import java.util.List;
+import com.zenith.templates.MessageTemplate;
 
 public class MessageService {
+	
+	MessageDao database= null;
+	
+    public MessageService() {
+        this.database = new MessageDao();
+    }
+	public void sendMessage(MessageModel message) {
+		MessageDao dao= new MessageDao();
+		dao.sendMessage(message);
+		
+	}
+	
+	public List<MessageTemplate> getUserMessages(GenericGetModel user)
+	{
+        try {
+            this.database.openConnection();
+            return database.getUserMessages(user);
+        } finally {
+            database.closeConnection();
+        }
+	}
 
-    MessageDao dao = null; 
-    
-    public MessageService(){
-        dao = new MessageDao(); 
-    }
-    public void sendMessage(MessageModel message) {
-        dao.openConnection();
-        dao.sendMessage(message); 
-        dao.closeConnection();
-    }
-    
-    public List<String> getMyMessages(GenericGetModel getModel) {
-        
-        return dao.getMyMessages(getModel); 
-        
-    }
-    
-    
 }

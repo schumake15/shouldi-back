@@ -71,4 +71,15 @@ public class VPBean {
     public void setViewed(PostBean viewed) {
         this.viewed = viewed;
     }
+
+	public VPBean(UserBean viewer, PostBean viewed) {
+		super();
+		this.viewer = viewer;
+		this.viewed = viewed;
+	}
+
+	public VPBean() {
+		super();
+	}
+    
 }

@@ -1,34 +1,36 @@
 package com.zenith.entrypoints;
 
 import java.util.List;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import com.zenith.Beans.PostBean;
 import com.zenith.Beans.UserBean;
 import com.zenith.DAO.UserDAO;
 import com.zenith.request.model.AdPostModel;
-import com.zenith.request.model.CommentModel;
 import com.zenith.request.model.FlagPostModel;
+import com.zenith.request.model.GenderedGetModel;
 import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.PostModel;
-import com.zenith.request.model.PostRequestModel;
 import com.zenith.request.model.RatingModel;
-import com.zenith.service.CommentService;
 import com.zenith.service.PostsService;
-import com.zenith.service.UserServiceImpl;
 import com.zenith.service.VerifyTokenCredentials;
+
 import com.zenith.templates.AdPostTemplate;
 import com.zenith.user.response.GenericSuccessOrFailureMessage;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import com.zenith.templates.PostTemplate;
-import java.util.ArrayList;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Response;
+import com.zenith.user.response.GenericSuccessOrFailureMessage;
 
 @Path("/posts")
 public class PostEntryPoint {
@@ -37,7 +39,7 @@ public class PostEntryPoint {
     @Path("/flagged")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
-    public List<PostBean> getFlaggedPosts() {
+    public List<PostTemplate> getFlaggedPosts() {
         PostsService service = new PostsService();
         return service.getFlaggedPosts();
     } 
@@ -129,8 +131,14 @@ public class PostEntryPoint {
     @Path("/unseen/all")
     @Consumes(MediaType.APPLICATION_JSON) // our method consumes or takes in json data
     @Produces({MediaType.APPLICATION_JSON})
-    public PostBean getUnseenPost(UserBean user) {
+    public List<PostTemplate> getUnseenPost(GenericGetModel user) {
         PostsService service = new PostsService();
+        UserDAO dao= new UserDAO();
+        UserBean check= dao.getUserByToken(user.getToken());
+        if((check.getViewed_posts().size()%6==0))
+        {
+        	
+        }
         return service.getUnseenPost(user);
     }
 
@@ -138,10 +146,10 @@ public class PostEntryPoint {
     @Path("/unseen/gender")
     @Consumes(MediaType.APPLICATION_JSON) // our method consumes or takes in json data
     @Produces({MediaType.APPLICATION_JSON})
-    public PostBean getUnseenPostGendered(PostRequestModel post) {
+    public List<PostTemplate> getUnseenPostGendered(GenderedGetModel post) {
         PostsService service = new PostsService();
 
-        return service.getUnseenPostGendered(post.getUser(), post.getGender());
+        return service.getUnseenPostGendered(post);
     }
 
     @GET

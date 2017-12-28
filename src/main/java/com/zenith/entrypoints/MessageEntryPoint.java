@@ -7,7 +7,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.MessageModel;
 import com.zenith.service.MessageService;
 import com.zenith.templates.PostTemplate;
@@ -37,6 +41,17 @@ public class MessageEntryPoint {
         MessageService service = new MessageService(); 
         MessageWrapper wrapper = new MessageWrapper(service.getMyMessages(getModel)); 
         return wrapper; 
+    }
+    
+    @GET
+    @Path("/user")
+    @Consumes(MediaType.APPLICATION_JSON) // our method consumes or takes in json data
+    @Produces({MediaType.APPLICATION_JSON})
+    public Response getUserMessages(GenericGetModel user) {
+    	MessageService service = new MessageService(); 	    	
+        Gson gson = new GsonBuilder().create();
+        String json = gson.toJson(service.getUserMessages(user)); 
+        return Response.ok(json).build(); 
     }
 
 }

@@ -30,48 +30,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class UserBean implements Serializable {
 
-    /**
-     * @return the balance
-     */
-    public int getBalance() {
-        return balance;
-    }
-
-    /**
-     * @param balance the balance to set
-     */
-    public void setBalance(int balance) {
-        this.balance = balance;
-    }
-
-    /**
-     * @return the ads
-     */
-    public List<AdvertisementBean> getAds() {
-        return ads;
-    }
-
-    /**
-     * @param ads the ads to set
-     */
-    public void setAds(List<AdvertisementBean> ads) {
-        this.ads = ads;
-    }
-
-    /**
-     * @return the email
-     */
-    public String getEmail() {
-        return email;
-    }
-
-    /**
-     * @param email the email to set
-     */
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     @Id
     @Column(name = "user_id")
     @SequenceGenerator(sequenceName = "USER_SEQ", name = "USER_SEQ")
@@ -96,6 +54,9 @@ public class UserBean implements Serializable {
     @Column(name="role")
     private String role; 
 
+    @Column(name = "flagged_account")
+    private int flag;
+    
     @Column(name = "locked_account")
     private int lock;
 
@@ -271,6 +232,7 @@ public class UserBean implements Serializable {
         this.gender = gender;
         this.role = role; 
         this.lock = lock;
+        this.flag=0;
         this.user_posts = user_posts;
         this.viewed_posts = viewed_posts;
         this.messages = messages;
@@ -293,6 +255,7 @@ public class UserBean implements Serializable {
         this.gender = gender;
         this.role = role;
         this.lock = lock;
+        this.flag=0;
         this.user_posts = user_posts;
         this.viewed_posts = viewed_posts;
         this.messages = messages;
@@ -329,5 +292,55 @@ public class UserBean implements Serializable {
     public void setToken(String token) {
         this.token = token;
     }
+    
+    /**
+     * @return the balance
+     */
+    public int getBalance() {
+        return balance;
+    }
+
+    /**
+     * @param balance the balance to set
+     */
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
+
+    /**
+     * @return the ads
+     */
+    public List<AdvertisementBean> getAds() {
+        return ads;
+    }
+
+    /**
+     * @param ads the ads to set
+     */
+    public void setAds(List<AdvertisementBean> ads) {
+        this.ads = ads;
+    }
+
+    /**
+     * @return the email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * @param email the email to set
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+	public int getFlag() {
+		return flag;
+	}
+
+	public void setFlag(int flag) {
+		this.flag = flag;
+	}
 
 }

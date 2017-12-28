@@ -1,5 +1,6 @@
 package com.zenith.DAO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -13,10 +14,18 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
+import com.zenith.Beans.CommentBean;
+import com.zenith.Beans.PostBean;
 import com.zenith.Beans.UserBean;
+import com.zenith.ImageUtils.ImageConversionUtil;
 import com.zenith.hibernate.utils.HibernateUtil;
 import com.zenith.hibernate.utils.HibernateUtils;
 import com.zenith.request.model.GenericGetModel;
+
+import com.zenith.templates.PostTemplate;
+import com.zenith.templates.UserTemplate;
+
+
 
 public class UserDAO {
 
@@ -105,7 +114,19 @@ public class UserDAO {
 
     }
     
-    
+    public List<UserTemplate> getFlaggedUsers()
+    {
+        session.beginTransaction();
+        List<String> comments = new ArrayList<String>(); 
+        List<UserBean> flagged = session.createCriteria(UserBean.class).list();
+        flagged = session.createCriteria(UserBean.class).add(Restrictions.eq("flag", 1)).list();
+        List<UserTemplate> templates=new ArrayList<UserTemplate>();
+        for(UserBean user: flagged)
+        {
+            templates.add(new UserTemplate(user.getUser_id(), user.getEmail(), user.getPassword(), user.getGender(), user.getRole(), user.getLock(), user.getFlag(), user.getScore(), user.getToken())); 
+        }
+        return templates;
+    }
 
     public void saveUser(UserBean user) {
 
@@ -123,7 +144,7 @@ public class UserDAO {
 
     }
 
-    public List<UserBean> getFavoriteUsers() {
+    public List<UserTemplate> getFavoriteUsers() {
 
         session.beginTransaction();
         Criteria criteria;
@@ -131,21 +152,26 @@ public class UserDAO {
         List<UserBean> favorites = session.createCriteria(UserBean.class).list();
 
         favorites = session.createCriteria(UserBean.class).add(Restrictions.gt("score", 2000)).list();
-        return favorites;
+        List<UserTemplate> templates= new ArrayList<UserTemplate>();
+        for(UserBean user: favorites)
+        {
+        	templates.add(new UserTemplate(user.getUser_id(), user.getEmail(), user.getPassword(), user.getGender(), user.getRole(), user.getLock(), user.getFlag(), user.getScore(), user.getToken()));
+        }
+        return templates;
 
     }
     
-	public void lockUser(UserBean user) {
+	public void lockUser(GenericGetModel user) {
 		UserBean lockUser = null;
-		System.out.println(session.createCriteria(UserBean.class).add(Restrictions.eq("user_id", user.getUser_id())));
+		UserBean u=getUserByToken(user.getToken());
 		Session session = HibernateUtil.getSession();
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
-			lockUser = (UserBean)session.createCriteria(UserBean.class).add(Restrictions.eq("user_id", user.getUser_id())).list().get(0);
-			if (lockUser != null) {
-				lockUser.setLock(1);
-				session.save(lockUser);
+			//lockUser = (UserBean)session.createCriteria(UserBean.class).add(Restrictions.eq("user_id", user.getUser_id())).list().get(0);
+			if (u != null) {
+				u.setLock(1);
+				session.save(u);
 				tx.commit();
 			}
 		} catch (HibernateException e) {

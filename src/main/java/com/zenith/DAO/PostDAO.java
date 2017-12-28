@@ -24,10 +24,11 @@ import com.zenith.Beans.LikeBean;
 import com.zenith.Beans.PostBean;
 import com.zenith.Beans.UserBean;
 import com.zenith.Beans.VPBean;
-import com.zenith.hibernate.utils.HibernateUtil;
+import com.zenith.ImageUtils.ImageConversionUtil;
 import com.zenith.hibernate.utils.HibernateUtils;
 import com.zenith.request.model.AdPostModel;
 import com.zenith.request.model.FlagPostModel;
+import com.zenith.request.model.GenderedGetModel;
 import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.PostModel;
 import com.zenith.request.model.RatingModel;
@@ -70,7 +71,7 @@ public class PostDAO {
         for (AdvertisementBean adBean : ads) {
             System.out.println("THE USER HAS ADS");
             image = ImageConversionUtil.convertToB64(adBean.getImage());
-            postTemplate.add(new AdPostTemplate(adBean.getNum_clicked(), adBean.getNum_shown(), image));  
+           // postTemplate.add(new AdPostTemplate(adBean.getNum_clicked(), adBean.getNum_shown(), image));  
         }
         return postTemplate; 
     }
@@ -101,14 +102,23 @@ public class PostDAO {
         return postTemplate;
     }
 
-    public List<PostBean> getFlaggedPosts() {
+    public List<PostTemplate> getFlaggedPosts() {
 
         session.beginTransaction();
-
+        List<String> comments = new ArrayList<String>(); 
         List<PostBean> flagged = session.createCriteria(PostBean.class).list();
-
         flagged = session.createCriteria(PostBean.class).add(Restrictions.eq("flagged", 1)).list();
-        return flagged;
+        List<PostTemplate> templates=new ArrayList<PostTemplate>();
+        for(PostBean post: flagged)
+        {
+        	String image = ImageConversionUtil.convertToB64(post.getImage());
+            List<CommentBean> commentBean = post.getPost_comments(); 
+            for (CommentBean comment : commentBean) {
+                comments.add(comment.getComment_text()); 
+            }
+            templates.add(new PostTemplate(post.getPost_id(), post.getLikes().size(), image, post.getDislikes().size(), comments)); 
+        }
+        return templates;
     }
 
     public PostBean getBestEventPost(int event) {
@@ -127,29 +137,59 @@ public class PostDAO {
         return highest;
 
     }
+    /*
+    public List<PostTemplate> getHall() {
+        List<PostBean> posts = session.createCriteria(PostBean.class).s
+        posts.sort(c);;
+        events= posts.
+        PostBean highest = null;
+        for (PostBean post : posts) {
+            if (highest == null) {
+                highest = post;
+            } else {
+                if (highest.getLikes().size() < post.getLikes().size()) {
+                    highest = post;
+                }
+            }
+        }
+        return highest;
 
-    public PostBean getUnseenPost(UserBean user) {
+    }*/
+
+    public List<PostTemplate> getUnseenPost(GenericGetModel user) {
 
         session.beginTransaction();
-
+        UserDAO dao= new UserDAO();
         List<PostBean> choosable = session.createCriteria(PostBean.class).list();
         choosable = session.createCriteria(PostBean.class).add(Restrictions.eq("completed", 0)).list();
-
-        List<VPBean> seen = user.getViewed_posts();
+        UserBean viewer= dao.getUserByToken(user.getToken());
+        List<VPBean> seen = viewer.getViewed_posts();
         List<PostBean> left = new ArrayList<PostBean>();
         for (VPBean vp : seen) {
             choosable.remove(vp.getViewed());
         }
+        List<PostTemplate> posts= new ArrayList<PostTemplate>();
+        for(int i=0; i<choosable.size();i++)
+        {
+        	if(i<9)
+        	{
+        		posts.add(new PostTemplate(choosable.get(i).getPost_id(), ImageConversionUtil.convertToB64(choosable.get(i).getImage())));
+        	}
+        }
+        //WHEN GET AD IS IMPLEMENTED
+        //AdvertisementBean ad= getAd();
+        //posts.add(new GetAdTemplate(ad.getAd_id(), ImageConversionUtil.convertToB64(ad.getImage()), ad.getAd_link()));
         PostBean random = choosable.get(new Random().nextInt(choosable.size()));
-        return random;
+        return posts;
     }
 
-    public PostBean getUnseenPostGendered(UserBean user, String gender) {
+    public List<PostTemplate> getUnseenPostGendered(GenderedGetModel request) {
         session.beginTransaction();
-
+        UserDAO udao= new UserDAO();
+        UserBean user= udao.getUserByToken(request.getToken());
         List<PostBean> choosable = session.createCriteria(PostBean.class).list();
         choosable = session.createCriteria(PostBean.class).add(Restrictions.eq("completed", 0)).list();
-
+        
         List<VPBean> seen = user.getViewed_posts();
         List<PostBean> left = new ArrayList<PostBean>();
         for (VPBean vp : seen) {
@@ -158,15 +198,23 @@ public class PostDAO {
         List<PostBean> remove = new ArrayList<PostBean>();
         for (PostBean post : choosable) {
             String postGender = post.getPoster().getGender();
-            if (!gender.equalsIgnoreCase(postGender)) {
+            if (!request.getGender().equalsIgnoreCase(postGender)) {
                 remove.add(post);
             }
         }
         for (PostBean post : remove) {
             choosable.remove(post);
         }
+        List<PostTemplate> posts= new ArrayList<PostTemplate>();
+        for(int i=0; i<choosable.size();i++)
+        {
+        	if(i<9)
+        	{
+        		posts.add(new PostTemplate(choosable.get(i).getPost_id(), ImageConversionUtil.convertToB64(choosable.get(i).getImage())));
+        	}
+        }
         PostBean random = choosable.get(new Random().nextInt(choosable.size()));
-        return random;
+        return posts;
     }
 
     public void checkScore() {
@@ -249,11 +297,14 @@ public class PostDAO {
             tx = session.beginTransaction();
             post = (PostBean) session.get(PostBean.class, rating.getPost());
             if (post != null) {
-                post.getLikes().add(new LikeBean(rating.getRater(), rating.getPost()));
+                LikeBean like=new LikeBean(rating.getRater(), rating.getPost());
+                VPBean view=new VPBean(rating.getRater(), rating.getPost());
                 if (!rating.getComment().equals("")) {
-                    post.getPost_comments().add(new CommentBean(rating.getPost(), rating.getRater(), rating.getComment()));
+                    CommentBean comment= new CommentBean(rating.getPost(), rating.getRater(), rating.getComment());
+                    session.save(comment);
                 }
-                session.save(post);
+                session.save(like);
+                session.save(view);
                 tx.commit();
             }
         } catch (HibernateException e) {
@@ -273,11 +324,14 @@ public class PostDAO {
             tx = session.beginTransaction();
             post = (PostBean) session.get(PostBean.class, rating.getPost());
             if (post != null) {
-                post.getDislikes().add(new DislikeBean(rating.getRater(), rating.getPost()));
+                DislikeBean dislike=new DislikeBean(rating.getRater(), rating.getPost());
+                VPBean view=new VPBean(rating.getRater(), rating.getPost());
                 if (!rating.getComment().equals("")) {
-                    post.getPost_comments().add(new CommentBean(rating.getPost(), rating.getRater(), rating.getComment()));
+                    CommentBean comment= new CommentBean(rating.getPost(), rating.getRater(), rating.getComment());
+                    session.save(comment);
                 }
-                session.save(post);
+                session.save(dislike);
+                session.save(view);
                 tx.commit();
             }
         } catch (HibernateException e) {
@@ -305,6 +359,9 @@ public class PostDAO {
             session.beginTransaction();
             PostBean postBean = (PostBean) posts.get(0);
             postBean.setFlag(1);
+            UserBean user=postBean.getPoster();
+            user.setFlag(1);
+            session.save(user);
             session.update(postBean);
             session.getTransaction().commit();
             return true;
