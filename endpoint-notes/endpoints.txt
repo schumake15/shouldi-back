@@ -73,6 +73,14 @@
 	Back-end happy path response: {"message":"success"}  
 	Back-end bad path response: {"message":"failure"}
 
+***TESTED***
+10. Post ad
+	HTTP request type: POST
+	Path: api/posts/my/posts
+	Front-end request: {"token":""}
+	Back-end happy path response: [{"comments":[], "dislikes":0, "images":"b64 data", "likes":0, "post_id":"id"}]  
+	Back-end bad path response: {"message":"failure"}
+
 
 	
 	
