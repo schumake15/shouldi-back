@@ -105,10 +105,54 @@
 	Back-end happy path response: {"score":0} 
 	Back-end bad path response: {} // empty json
 
-
+14. Flag a post
+	HTTP request type: POST
+	Path: api/comments/flag
+	Front-end request: {"token":"", "commentID":"id of comment"}
 	
-	
-	
+15. Send Message
+	HTTP request type: POST
+	Path: api/messages/send
+	Front-end request: {"to_id":"id of reciever", "from_id":"id of sender", "content":"content of message"}
+16. Get user messages
+	HTTP request type: POST
+	Path: api/messages/user
+	Front-end request: {"token":""}
 
+17. get unseen posts
+	HTTP request type: POST
+	Path: api/posts/unseen/all
+	Front-end request: {"token":""}
+	Back-end happy path response: [{"post_id":"", "image":""}]
 
+18. get unseen posts based on gender
+	HTTP request type: POST
+	Path: api/posts/unseen/gender
+	Front-end request: {"token":"", "gender":""}
+	Back-end happy path response: [{"post_id":"", "image":""}]	
+
+19. Like a post
+	HTTP request type: POST
+	Path: api/posts/like
+	Front-end request: {"token":"", "post_id":""}
+
+20. Dislike a post
+	HTTP request type: POST
+	Path: api/posts/dislike
+	Front-end request: {"token":"", "post_id":""}
+
+20. Dislike a post
+	HTTP request type: POST
+	Path: api/posts/remove
+	Front-end request: {"token":"", "post_id":""}
+
+21. Score posts
+	HTTP request type: POST
+	Path: api/posts/check/score
+	Front-end request: {}
+
+22. Lock a user
+	HTTP request type: POST
+	Path: api/users/lock
+	Front-end request: {"token":"logged in user", "user_id":"user to lock"}
 
