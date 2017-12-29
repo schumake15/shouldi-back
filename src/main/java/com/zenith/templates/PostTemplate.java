@@ -21,6 +21,15 @@ public class PostTemplate {
     private int likes;
     private int dislikes; 
     private List<String> comments; 
+    /* Xavier, this field is needed so we can group ads and user posts together, we have to use same object since collections 
+       must hold same type 
+    */
+    private String url; 
+    private int num_clicked;
+    private int num_shown; 
+    
+    
+ 
     
 
     
@@ -34,6 +43,13 @@ public class PostTemplate {
         this.dislikes = dislikes; 
         this.comments = comments;
       
+    }
+    
+    public PostTemplate(int num_clicked, int num_shown, String image, String url) {
+        this.num_clicked = num_clicked;
+        this.num_shown = num_shown;
+        this.image = image;
+        this.url = url; 
     }
     public PostTemplate(int post_id, String image) {
         this.post_id = post_id;
@@ -108,4 +124,47 @@ public class PostTemplate {
     public void setComments(List<String> comments) {
         this.comments = comments;
     }
+
+    /**
+     * @return the url
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * @param url the url to set
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    /**
+     * @return the num_clicked
+     */
+    public int getNum_clicked() {
+        return num_clicked;
+    }
+
+    /**
+     * @param num_clicked the num_clicked to set
+     */
+    public void setNum_clicked(int num_clicked) {
+        this.num_clicked = num_clicked;
+    }
+
+    /**
+     * @return the num_shown
+     */
+    public int getNum_shown() {
+        return num_shown;
+    }
+
+    /**
+     * @param num_shown the num_shown to set
+     */
+    public void setNum_shown(int num_shown) {
+        this.num_shown = num_shown;
+    }
+    
 }

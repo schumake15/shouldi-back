@@ -39,6 +39,10 @@ import java.sql.Blob;
 import com.zenith.ImageUtils.ImageConversionUtil;
 import com.zenith.templates.AdPostTemplate;
 import com.zenith.templates.PostTemplate;
+import java.util.Random;
+
+
+
 
 public class PostDAO {
 
@@ -54,6 +58,26 @@ public class PostDAO {
             session.close();
         }
     }
+    
+    private PostTemplate getRandomAd() {
+
+
+        /* Get post based on ID */
+        String hql = "From AdvertisementBean";
+        List ads
+                = session.createQuery(hql)
+                        .list();
+        
+        // number of ads is the maximum and the 0 is our minimum 
+        Random rand = new Random();
+        int n = rand.nextInt(ads.size()-1) + 0;
+        AdvertisementBean adBean = (AdvertisementBean)ads.get(n); 
+        
+        
+        String image = ImageConversionUtil.convertToB64(adBean.getImage()); 
+        return new PostTemplate(adBean.getNum_clicked(), adBean.getNum_shown(), image, adBean.getAd_link()); 
+
+    }
 
     public List<AdPostTemplate> adGetMyPosts(GenericGetModel getModel) {
 
@@ -67,9 +91,12 @@ public class PostDAO {
         /* All posts will be converted to a PostTemplate */
         List<AdPostTemplate> postTemplate = new ArrayList<AdPostTemplate>();
         String image;
+        
+        session.update(userBean);
         for (AdvertisementBean adBean : ads) {
             
             image = ImageConversionUtil.convertToB64(adBean.getImage());
+            postTemplate.add(new AdPostTemplate(adBean.getNum_clicked(), adBean.getNum_shown(), image)); 
     
         }
         return postTemplate; 
@@ -89,7 +116,8 @@ public class PostDAO {
 
         /* Image needs to be converted to proper format for each post */
         String image;
-        temp = userBean.getUser_posts();
+        session.update(userBean);
+        temp = userBean.getUser_posts(); 
         for (PostBean bean : temp) {
             image = ImageConversionUtil.convertToB64(bean.getImage());
             List<CommentBean> commentBean = bean.getPost_comments();
@@ -161,6 +189,7 @@ public class PostDAO {
         UserDAO dao= new UserDAO();
         List<PostBean> choosable = session.createCriteria(PostBean.class).list();
         choosable = session.createCriteria(PostBean.class).add(Restrictions.eq("completed", 0)).list();
+        dao.openConnection();
         UserBean viewer= dao.getUserByToken(user.getToken());
         List<VPBean> seen = viewer.getViewed_posts();
         List<PostBean> left = new ArrayList<PostBean>();
@@ -175,9 +204,11 @@ public class PostDAO {
         		posts.add(new PostTemplate(choosable.get(i).getPost_id(), ImageConversionUtil.convertToB64(choosable.get(i).getImage())));
         	}
         }
-        //WHEN GET AD IS IMPLEMENTED
-        //AdvertisementBean ad= getAd();
-        //posts.add(new GetAdTemplate(ad.getAd_id(), ImageConversionUtil.convertToB64(ad.getImage()), ad.getAd_link()));
+        dao.closeConnection();
+       
+        /* Get random ad */ 
+        posts.add(this.getRandomAd()); 
+        
         PostBean random = choosable.get(new Random().nextInt(choosable.size()));
         return posts;
     }

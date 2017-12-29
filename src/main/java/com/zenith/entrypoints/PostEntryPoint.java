@@ -23,6 +23,7 @@ import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.PostModel;
 import com.zenith.request.model.RatingModel;
 import com.zenith.service.PostsService;
+import com.zenith.service.UserServiceImpl;
 import com.zenith.service.VerifyTokenCredentials;
 
 import com.zenith.templates.AdPostTemplate;
@@ -125,21 +126,17 @@ public class PostEntryPoint {
         /* By default the message is success, toggle to change it to failure */
         message.toggleMessage();
         return message;
-    }
+    } 
 
-    @GET
+    @POST
     @Path("/unseen/all")
     @Consumes(MediaType.APPLICATION_JSON) // our method consumes or takes in json data
     @Produces({MediaType.APPLICATION_JSON})
     public List<PostTemplate> getUnseenPost(GenericGetModel user) {
-        PostsService service = new PostsService();
-        UserDAO dao= new UserDAO();
-        UserBean check= dao.getUserByToken(user.getToken());
-        if((check.getViewed_posts().size()%6==0))
-        {
-        	
-        }
+
+        PostsService service = new PostsService(); 
         return service.getUnseenPost(user);
+
     }
 
     @GET

@@ -105,6 +105,8 @@ public class AdvertisementBean implements Serializable {
     public int getNum_shown() {
         return num_shown;
     }
+    
+    public AdvertisementBean(){};
 
     /**
      * @param num_shown the num_shown to set
@@ -113,6 +115,28 @@ public class AdvertisementBean implements Serializable {
         this.num_shown = num_shown;
     }
 
+    /**
+     * @param Sponsor the Sponsor to set
+     */
+    public void setSponsor(UserBean Sponsor) {
+        this.Sponsor = Sponsor;
+    }
+
+    /**
+     * @return the ad_link
+     */
+    public String getAd_link() {
+        return ad_link;
+    }
+
+    /**
+     * @param ad_link the ad_link to set
+     */
+    public void setAd_link(String ad_link) {
+        this.ad_link = ad_link;
+    }
+
     
     
 }
+ 
