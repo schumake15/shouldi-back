@@ -165,6 +165,7 @@ public class PostDAO {
         UserDAO dao= new UserDAO();
         List<PostBean> choosable = session.createCriteria(PostBean.class).list();
         choosable = session.createCriteria(PostBean.class).add(Restrictions.eq("completed", 0)).list();
+        dao.openConnection();
         UserBean viewer= dao.getUserByToken(user.getToken());
         List<VPBean> seen = viewer.getViewed_posts();
         List<PostBean> left = new ArrayList<PostBean>();
@@ -179,6 +180,7 @@ public class PostDAO {
         		posts.add(new PostTemplate(choosable.get(i).getPost_id(), ImageConversionUtil.convertToB64(choosable.get(i).getImage())));
         	}
         }
+        dao.closeConnection();
         //WHEN GET AD IS IMPLEMENTED
         //AdvertisementBean ad= getAd();
         //posts.add(new GetAdTemplate(ad.getAd_id(), ImageConversionUtil.convertToB64(ad.getImage()), ad.getAd_link()));
