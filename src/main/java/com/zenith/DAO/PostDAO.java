@@ -67,9 +67,12 @@ public class PostDAO {
         /* All posts will be converted to a PostTemplate */
         List<AdPostTemplate> postTemplate = new ArrayList<AdPostTemplate>();
         String image;
+        
+        session.update(userBean);
         for (AdvertisementBean adBean : ads) {
             
             image = ImageConversionUtil.convertToB64(adBean.getImage());
+            postTemplate.add(new AdPostTemplate(adBean.getNum_clicked(), adBean.getNum_shown(), image)); 
     
         }
         return postTemplate; 
@@ -89,7 +92,8 @@ public class PostDAO {
 
         /* Image needs to be converted to proper format for each post */
         String image;
-        temp = userBean.getUser_posts();
+        session.update(userBean);
+        temp = userBean.getUser_posts(); 
         for (PostBean bean : temp) {
             image = ImageConversionUtil.convertToB64(bean.getImage());
             List<CommentBean> commentBean = bean.getPost_comments();

@@ -105,6 +105,8 @@ public class AdvertisementBean implements Serializable {
     public int getNum_shown() {
         return num_shown;
     }
+    
+    public AdvertisementBean(){};
 
     /**
      * @param num_shown the num_shown to set
