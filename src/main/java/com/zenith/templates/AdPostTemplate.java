@@ -18,6 +18,7 @@ public class AdPostTemplate {
     private int numberOfClicks;
     private int timesViewed;
     private String image; 
+    private String url; 
     
     public AdPostTemplate(int numberOfClicks, int timesViewed, String image) {
         
@@ -25,6 +26,15 @@ public class AdPostTemplate {
         this.timesViewed = timesViewed;
         this.image = "data:image/png;base64," + image; 
         
+    }
+    
+    public AdPostTemplate(int numberOfClicks, int timesViewed, String image, String url) {
+
+        this.numberOfClicks = numberOfClicks;
+        this.timesViewed = timesViewed;
+        this.image = "data:image/png;base64," + image;
+        this.url = url; 
+
     }
     
     public AdPostTemplate(){}; 
@@ -69,6 +79,20 @@ public class AdPostTemplate {
      */
     public void setImage(String image) {
         this.image = image;
+    }
+
+    /**
+     * @return the url
+     */
+    public String getUrl() {
+        return url;
+    }
+
+    /**
+     * @param url the url to set
+     */
+    public void setUrl(String url) {
+        this.url = url;
     }
     
     

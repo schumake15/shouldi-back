@@ -39,6 +39,10 @@ import java.sql.Blob;
 import com.zenith.ImageUtils.ImageConversionUtil;
 import com.zenith.templates.AdPostTemplate;
 import com.zenith.templates.PostTemplate;
+import java.util.Random;
+
+
+
 
 public class PostDAO {
 
@@ -53,6 +57,26 @@ public class PostDAO {
         if (session != null) {
             session.close();
         }
+    }
+    
+    private PostTemplate getRandomAd() {
+
+
+        /* Get post based on ID */
+        String hql = "From AdvertisementBean";
+        List ads
+                = session.createQuery(hql)
+                        .list();
+        
+        // number of ads is the maximum and the 0 is our minimum 
+        Random rand = new Random();
+        int n = rand.nextInt(ads.size()-1) + 0;
+        AdvertisementBean adBean = (AdvertisementBean)ads.get(n); 
+        
+        
+        String image = ImageConversionUtil.convertToB64(adBean.getImage()); 
+        return new PostTemplate(adBean.getNum_clicked(), adBean.getNum_shown(), image, adBean.getAd_link()); 
+
     }
 
     public List<AdPostTemplate> adGetMyPosts(GenericGetModel getModel) {
@@ -181,9 +205,10 @@ public class PostDAO {
         	}
         }
         dao.closeConnection();
-        //WHEN GET AD IS IMPLEMENTED
-        //AdvertisementBean ad= getAd();
-        //posts.add(new GetAdTemplate(ad.getAd_id(), ImageConversionUtil.convertToB64(ad.getImage()), ad.getAd_link()));
+       
+        /* Get random ad */ 
+        posts.add(this.getRandomAd()); 
+        
         PostBean random = choosable.get(new Random().nextInt(choosable.size()));
         return posts;
     }

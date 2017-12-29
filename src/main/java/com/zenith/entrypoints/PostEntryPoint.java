@@ -133,17 +133,7 @@ public class PostEntryPoint {
     @Consumes(MediaType.APPLICATION_JSON) // our method consumes or takes in json data
     @Produces({MediaType.APPLICATION_JSON})
     public List<PostTemplate> getUnseenPost(GenericGetModel user) {
-//        PostsService postService = new PostsService();
-//        //UserDAO dao= new UserDAO();
-//        UserServiceImpl service = new UserServiceImpl(); 
-//        UserBean userBean = null;
-//        userBean =  service.getUserByToken(user.getToken()); 
-//        //System.out.println(user.getToken());
-//        UserBean check= dao.getUserByToken(user.getToken());
-//        if((check.getViewed_posts().size()%6==0))
-//        {
-//        	
-//        }
+
         PostsService service = new PostsService(); 
         return service.getUnseenPost(user);
 
