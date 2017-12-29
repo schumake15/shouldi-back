@@ -70,6 +70,9 @@ public class PostDAO {
         
         // number of ads is the maximum and the 0 is our minimum 
         Random rand = new Random();
+        if(ads.size() == 0) {
+            return null; 
+        }
         int n = rand.nextInt(ads.size()-1) + 0;
         AdvertisementBean adBean = (AdvertisementBean)ads.get(n); 
         
@@ -207,7 +210,10 @@ public class PostDAO {
         dao.closeConnection();
        
         /* Get random ad */ 
-        posts.add(this.getRandomAd()); 
+        PostTemplate model = this.getRandomAd(); 
+        if (model != null){
+            posts.add(model); 
+        }
         
         PostBean random = choosable.get(new Random().nextInt(choosable.size()));
         return posts;
@@ -240,7 +246,7 @@ public class PostDAO {
         {
         	if(i<9)
         	{
-        		posts.add(new PostTemplate(choosable.get(i).getPost_id(), ImageConversionUtil.convertToB64(choosable.get(i).getImage())));
+        		posts.add(new PostTemplate(choosable.get(i).getPost_id(),  ImageConversionUtil.convertToB64( choosable.get(i).getImage())));
         	}
         }
         PostBean random = choosable.get(new Random().nextInt(choosable.size()));
