@@ -22,6 +22,7 @@ import com.zenith.request.model.GenderedGetModel;
 import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.PostModel;
 import com.zenith.request.model.RatingModel;
+import com.zenith.request.model.ViewedAdModel;
 import com.zenith.service.PostsService;
 import com.zenith.service.UserServiceImpl;
 import com.zenith.service.VerifyTokenCredentials;
@@ -56,6 +57,15 @@ public class PostEntryPoint {
         };
         Response response = Response.ok(entity).build();
         return response;
+    }
+    
+    @POST
+    @Path("/ad/update")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces({MediaType.APPLICATION_JSON})
+    public void getMyPosts(ViewedAdModel viewedAdModel) {
+        PostsService postService = new PostsService();
+        postService.updateAd(viewedAdModel); 
     }
 
     @POST

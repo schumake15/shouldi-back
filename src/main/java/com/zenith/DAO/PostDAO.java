@@ -37,6 +37,7 @@ import com.google.gson.Gson;
 import com.zenith.Beans.AdvertisementBean;
 import java.sql.Blob;
 import com.zenith.ImageUtils.ImageConversionUtil;
+import com.zenith.request.model.ViewedAdModel;
 import com.zenith.templates.AdPostTemplate;
 import com.zenith.templates.PostTemplate;
 import java.util.Random;
@@ -57,6 +58,27 @@ public class PostDAO {
         if (session != null) {
             session.close();
         }
+    }
+    
+    public void updateAd(ViewedAdModel viewedAdModel) {
+
+        /* Get post based on ID */
+        String hql = "From AdvertisementBean E WHERE E.ad_id = :_id";
+        List posts
+                = session.createQuery(hql).setParameter("_id", viewedAdModel.getPost_id())
+                        .list();
+        if(!posts.isEmpty()) {
+            session.getTransaction().begin();
+            AdvertisementBean adBean = (AdvertisementBean)posts.get(0); 
+            int numShown = adBean.getNum_shown() + 1; 
+            int wasClicked = adBean.getNum_clicked() + viewedAdModel.getClicked(); 
+            adBean.setNum_clicked(wasClicked);
+            adBean.setNum_shown(numShown);
+            session.update(adBean); 
+            session.getTransaction().commit();
+            
+        }
+        
     }
     
     private PostTemplate getRandomAd() {
@@ -464,7 +486,6 @@ public class PostDAO {
             postBean = (PostBean) resultList.get(0);
 
         }
-        System.out.println(postBean);
         return postBean;
     }
 }
