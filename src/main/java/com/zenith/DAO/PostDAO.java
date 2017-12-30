@@ -73,12 +73,12 @@ public class PostDAO {
         if(ads.size() == 0) {
             return null; 
         }
-        int n = rand.nextInt(ads.size()-1) + 0;
+        int n = rand.nextInt(ads.size()) + 0;
         AdvertisementBean adBean = (AdvertisementBean)ads.get(n); 
         
         
         String image = ImageConversionUtil.convertToB64(adBean.getImage()); 
-        return new PostTemplate(adBean.getNum_clicked(), adBean.getNum_shown(), image, adBean.getAd_link()); 
+        return new PostTemplate(adBean.getNum_clicked(), adBean.getNum_shown(), image, adBean.getAd_link(), 1, adBean.getAd_id()); 
 
     }
 

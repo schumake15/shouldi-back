@@ -27,6 +27,7 @@ public class PostTemplate {
     private String url; 
     private int num_clicked;
     private int num_shown; 
+    private int is_ad; 
     
 
     public PostTemplate(){}
@@ -41,11 +42,13 @@ public class PostTemplate {
       
     }
     
-    public PostTemplate(int num_clicked, int num_shown, String image, String url) {
+    public PostTemplate(int num_clicked, int num_shown, String image, String url, int is_ad, int adID) {
         this.num_clicked = num_clicked;
         this.num_shown = num_shown;
         this.image = "data:image/png;base64," + image;
         this.url = url; 
+        this.is_ad = is_ad; 
+        this.post_id = adID; 
     }
     public PostTemplate(int post_id, String image) {
         this.post_id = post_id;
@@ -162,5 +165,20 @@ public class PostTemplate {
     public void setNum_shown(int num_shown) {
         this.num_shown = num_shown;
     }
+
+    /**
+     * @return the is_ad
+     */
+    public int getIs_ad() {
+        return is_ad;
+    }
+
+    /**
+     * @param is_ad the is_ad to set
+     */
+    public void setIs_ad(int is_ad) {
+        this.is_ad = is_ad;
+    }
+    
     
 }
