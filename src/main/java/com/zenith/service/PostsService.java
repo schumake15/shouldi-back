@@ -12,6 +12,7 @@ import com.zenith.request.model.GenderedGetModel;
 import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.PostModel;
 import com.zenith.request.model.RatingModel;
+import com.zenith.request.model.ViewedAdModel;
 import com.zenith.templates.AdPostTemplate;
 import org.hibernate.HibernateException;
 import com.zenith.templates.PostTemplate;
@@ -28,6 +29,16 @@ public class PostsService {
         try {
             this.database.openConnection();
             return database.getFlaggedPosts();
+        } finally {
+            database.closeConnection();
+        }
+    }
+    
+    public void updateAd(ViewedAdModel viewedAdModel) {
+        try {
+            this.database.openConnection();
+            this.database.updateAd(viewedAdModel);
+                  
         } finally {
             database.closeConnection();
         }

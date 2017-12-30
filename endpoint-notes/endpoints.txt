@@ -114,11 +114,12 @@
 	HTTP request type: POST
 	Path: api/messages/send
 	Front-end request: {"to_id":"id of reciever", "from_id":"id of sender", "content":"content of message"}
+
 16. Get user messages
 	HTTP request type: POST
 	Path: api/messages/user
 	Front-end request: {"token":""}
-
+***TESTED***
 17. get unseen posts
 	HTTP request type: POST
 	Path: api/posts/unseen/all
@@ -131,19 +132,15 @@
 	Front-end request: {"token":"", "gender":""}
 	Back-end happy path response: [{"post_id":"", "image":""}]	
 
+***TESTED***
 19. Like a post
 	HTTP request type: POST
 	Path: api/posts/like
-	Front-end request: {"token":"", "post_id":""}
-
+	Front-end request: {"token":"", "post_id":"", "comment":""}
+***TESTED***
 20. Dislike a post
 	HTTP request type: POST
 	Path: api/posts/dislike
-	Front-end request: {"token":"", "post_id":""}
-
-20. Dislike a post
-	HTTP request type: POST
-	Path: api/posts/remove
 	Front-end request: {"token":"", "post_id":""}
 
 21. Score posts
@@ -155,4 +152,10 @@
 	HTTP request type: POST
 	Path: api/users/lock
 	Front-end request: {"token":"logged in user", "user_id":"user to lock"}
+
+***TESTED***
+23. Update an ad after is been viewed 
+	HTTP request type: POST
+	Path: api/posts/ad/update
+	Front-end request: {"token":"", "post_id":"", "clicked":0}
 

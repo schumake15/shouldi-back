@@ -37,6 +37,9 @@ import com.google.gson.Gson;
 import com.zenith.Beans.AdvertisementBean;
 import java.sql.Blob;
 import com.zenith.ImageUtils.ImageConversionUtil;
+import com.zenith.interfaces.UserService;
+import com.zenith.request.model.ViewedAdModel;
+import com.zenith.service.PostsService;
 import com.zenith.templates.AdPostTemplate;
 import com.zenith.templates.PostTemplate;
 import java.util.Random;
@@ -57,6 +60,27 @@ public class PostDAO {
         if (session != null) {
             session.close();
         }
+    }
+    
+    public void updateAd(ViewedAdModel viewedAdModel) {
+
+        /* Get post based on ID */
+        String hql = "From AdvertisementBean E WHERE E.ad_id = :_id";
+        List posts
+                = session.createQuery(hql).setParameter("_id", viewedAdModel.getPost_id())
+                        .list();
+        if(!posts.isEmpty()) {
+            session.getTransaction().begin();
+            AdvertisementBean adBean = (AdvertisementBean)posts.get(0); 
+            int numShown = adBean.getNum_shown() + 1; 
+            int wasClicked = adBean.getNum_clicked() + viewedAdModel.getClicked(); 
+            adBean.setNum_clicked(wasClicked);
+            adBean.setNum_shown(numShown);
+            session.update(adBean); 
+            session.getTransaction().commit();
+            
+        }
+        
     }
     
     private PostTemplate getRandomAd() {
@@ -328,15 +352,18 @@ public class PostDAO {
 
     public void like(RatingModel rating) {
         PostBean post = null;
+        UserServiceImpl service = new UserServiceImpl();
+        UserBean rater = service.getUserByToken(rating.getToken()); 
+        
         Transaction tx = session.getTransaction();
         try {
             tx = session.beginTransaction();
-            post = (PostBean) session.get(PostBean.class, rating.getPost());
+            post = this.getPostById(rating.getPost_id()); 
             if (post != null) {
-                LikeBean like=new LikeBean(rating.getRater(), rating.getPost());
-                VPBean view=new VPBean(rating.getRater(), rating.getPost());
+                LikeBean like=new LikeBean(post.getPoster(), post);
+                VPBean view=new VPBean(rater, post);
                 if (!rating.getComment().equals("")) {
-                    CommentBean comment= new CommentBean(rating.getPost(), rating.getRater(), rating.getComment());
+                    CommentBean comment= new CommentBean(post, rater, rating.getComment());
                     session.save(comment);
                 }
                 session.save(like);
@@ -355,15 +382,17 @@ public class PostDAO {
 
     public void dislike(RatingModel rating) {
         PostBean post = null;
+        UserServiceImpl service = new UserServiceImpl();
+        UserBean rater = service.getUserByToken(rating.getToken()); 
         Transaction tx = session.getTransaction();
         try {
             tx = session.beginTransaction();
-            post = (PostBean) session.get(PostBean.class, rating.getPost());
+            post = this.getPostById(rating.getPost_id()); 
             if (post != null) {
-                DislikeBean dislike=new DislikeBean(rating.getRater(), rating.getPost());
-                VPBean view=new VPBean(rating.getRater(), rating.getPost());
+                DislikeBean dislike=new DislikeBean(post.getPoster(), post);
+                VPBean view=new VPBean(rater, post);
                 if (!rating.getComment().equals("")) {
-                    CommentBean comment= new CommentBean(rating.getPost(), rating.getRater(), rating.getComment());
+                    CommentBean comment= new CommentBean(post, rater, rating.getComment());
                     session.save(comment);
                 }
                 session.save(dislike);
@@ -446,7 +475,7 @@ public class PostDAO {
 
     }
 
-    public PostBean getPostById(int username) {
+    public PostBean getPostById(int id) {
 
         /* make sure value is not null */
         PostBean postBean = null;
@@ -456,7 +485,7 @@ public class PostDAO {
         // create criteria against a particular persistent class
         CriteriaQuery<PostBean> criteria = cb.createQuery(PostBean.class);
 
-        String hql = "FROM PostBean E WHERE E.post_id = " + username;
+        String hql = "FROM PostBean E WHERE E.post_id = " + id;
         Query query = session.createQuery(hql);
         List resultList = query.list();
 
@@ -464,7 +493,6 @@ public class PostDAO {
             postBean = (PostBean) resultList.get(0);
 
         }
-        System.out.println(postBean);
         return postBean;
     }
 }
