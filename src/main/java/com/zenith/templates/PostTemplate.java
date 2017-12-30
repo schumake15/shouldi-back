@@ -28,11 +28,7 @@ public class PostTemplate {
     private int num_clicked;
     private int num_shown; 
     
-    
- 
-    
 
-    
     public PostTemplate(){}
     public PostTemplate(int post_id,  int likes, String image, int dislikes, List<String> comments){
         this.post_id = post_id;
@@ -48,12 +44,12 @@ public class PostTemplate {
     public PostTemplate(int num_clicked, int num_shown, String image, String url) {
         this.num_clicked = num_clicked;
         this.num_shown = num_shown;
-        this.image = image;
+        this.image = "data:image/png;base64," + image;
         this.url = url; 
     }
     public PostTemplate(int post_id, String image) {
         this.post_id = post_id;
-        this.image = image;
+        this.image = "data:image/png;base64," + image;
 	}
 	/**
      * @return the post_id

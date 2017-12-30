@@ -8,14 +8,14 @@ import javax.persistence.criteria.CriteriaQuery;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
+import org.hibernate.Query; 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
 import com.zenith.Beans.CommentBean;
-import com.zenith.Beans.PostBean;
+import com.zenith.Beans.PostBean; 
 import com.zenith.Beans.UserBean;
 import com.zenith.ImageUtils.ImageConversionUtil;
 import com.zenith.hibernate.utils.HibernateUtil;
