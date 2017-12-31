@@ -62,6 +62,51 @@ public class PostDAO {
         }
     }
     
+    public void finalize(RatingModel rating) {
+        session.beginTransaction(); 
+        String hql = "From PostBean E WHERE E.post_id = :_id";
+        List posts
+                = session.createQuery(hql).setParameter("_id", rating.getPost_id())
+                        .list();
+        PostBean postBean = (PostBean)posts.get(0); 
+        List<LikeBean> likes = postBean.getLikes();
+        List<DislikeBean> dislikes = postBean.getDislikes();
+        List<Integer> ids = new ArrayList<Integer>();
+        int flag = 0;
+        if (likes.size() > dislikes.size()) {
+            flag = 1;
+            for (LikeBean like : likes) {
+                ids.add(like.getUser().getUser_id());
+            }
+        } else if (likes.size() < dislikes.size()) {
+            flag = 1;
+            for (DislikeBean dislike : dislikes) {
+                ids.add(dislike.getUser().getUser_id());
+            }
+        }
+
+        /* Get users by their id */
+        if (flag == 1) {
+            hql = "From UserBean";
+            List users = session.createQuery(hql).list();
+            int score = 0;
+            UserBean temp = null;
+            for (Object user : users) {
+                for (Integer id : ids) {
+                    temp = (UserBean) user;
+                    if (temp.getUser_id() == id) {
+                        score = temp.getScore() + 1;
+                        temp.setScore(score);
+                        session.update(temp);
+                    }
+                }
+            }
+
+            session.getTransaction().commit();
+        }
+       
+    }
+    
     public void updateAd(ViewedAdModel viewedAdModel) {
 
         /* Get post based on ID */

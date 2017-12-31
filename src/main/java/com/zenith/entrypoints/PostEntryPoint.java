@@ -38,13 +38,13 @@ import com.zenith.user.response.GenericSuccessOrFailureMessage;
 public class PostEntryPoint {
 
     @GET
-    @Path("/flagged")
+    @Path("/flagged") 
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
     public List<PostTemplate> getFlaggedPosts() {
         PostsService service = new PostsService();
-        return service.getFlaggedPosts();
-    } 
+        return service.getFlaggedPosts(); 
+    }
 
     @POST
     @Path("/my/posts")
@@ -52,20 +52,20 @@ public class PostEntryPoint {
     @Produces({MediaType.APPLICATION_JSON})
     public Response getMyPosts(GenericGetModel getModel) {
         PostsService service = new PostsService();
-        List<PostTemplate> list = service.getMyPosts(getModel); 
+        List<PostTemplate> list = service.getMyPosts(getModel);
         GenericEntity<List<PostTemplate>> entity = new GenericEntity<List<PostTemplate>>(list) {
         };
         Response response = Response.ok(entity).build();
         return response;
     }
-    
+
     @POST
     @Path("/ad/update")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
     public void getMyPosts(ViewedAdModel viewedAdModel) {
         PostsService postService = new PostsService();
-        postService.updateAd(viewedAdModel); 
+        postService.updateAd(viewedAdModel);
     }
 
     @POST
@@ -75,7 +75,7 @@ public class PostEntryPoint {
     public GenericSuccessOrFailureMessage createPost(PostModel postModel) {
 
         GenericSuccessOrFailureMessage message = new GenericSuccessOrFailureMessage();
-
+        System.out.println(postModel.getImage());
         /* Check against the token before any other operations can be done */
         if (VerifyTokenCredentials.verifyCredentials(postModel.getToken()) != null) {
             PostsService service = new PostsService();
@@ -87,14 +87,14 @@ public class PostEntryPoint {
         message.toggleMessage();
         return message;
     }
-    
+
     @POST
     @Path("ad/my/posts")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
     public List<AdPostTemplate> adGetMyPosts(GenericGetModel getModel) {
         PostsService service = new PostsService();
-        return service.adGetMyPosts(getModel); 
+        return service.adGetMyPosts(getModel);
     }
 
     @POST
@@ -136,7 +136,7 @@ public class PostEntryPoint {
         /* By default the message is success, toggle to change it to failure */
         message.toggleMessage();
         return message;
-    } 
+    }
 
     @POST
     @Path("/unseen/all")
@@ -144,7 +144,7 @@ public class PostEntryPoint {
     @Produces({MediaType.APPLICATION_JSON})
     public List<PostTemplate> getUnseenPost(GenericGetModel user) {
 
-        PostsService service = new PostsService(); 
+        PostsService service = new PostsService();
         return service.getUnseenPost(user);
 
     }
@@ -174,6 +174,14 @@ public class PostEntryPoint {
     public void removePost(PostBean post) {
         PostsService service = new PostsService();
         service.removePost(post);
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/finalize")
+    public void finalize(RatingModel rating) {
+        PostsService service = new PostsService();
+        service.finalize(rating); 
     }
 
     @POST

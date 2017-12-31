@@ -124,6 +124,7 @@ public class UserEntryPoint {
             Token token = new Token();
             userBean.setToken(token.getToken());
             service.updateUser(userBean);
+            token.setUser_role(userBean.getRole());
 
             /* Return token to user so we can validate who the user is */
             return token;
