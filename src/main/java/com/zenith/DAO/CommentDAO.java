@@ -6,7 +6,7 @@
 package com.zenith.DAO;
 
 import com.zenith.Beans.CommentBean;
-import com.zenith.Beans.PostBean;
+import com.zenith.Beans.PostBean; 
 import com.zenith.Beans.UserBean;
 import com.zenith.hibernate.utils.HibernateUtils;
 import com.zenith.interfaces.DAO;

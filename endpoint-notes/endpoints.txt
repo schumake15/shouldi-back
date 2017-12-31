@@ -126,7 +126,7 @@
 	Front-end request: {"token":""}
 	Back-end happy path response: [{"post_id":"", "image":""}]
 
-18. get unseen posts based on gender
+18. get unseen posts based on gender 
 	HTTP request type: POST
 	Path: api/posts/unseen/gender
 	Front-end request: {"token":"", "gender":""}

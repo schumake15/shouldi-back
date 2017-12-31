@@ -188,6 +188,7 @@ public class PostEntryPoint {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/like")
     public void like(RatingModel rating) {
+        System.out.println(rating.getPost_id() + " " + rating.getComment() + " " + rating.getToken()); 
         PostsService service = new PostsService();
         service.like(rating);
     }

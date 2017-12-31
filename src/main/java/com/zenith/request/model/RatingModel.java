@@ -24,7 +24,7 @@ public class RatingModel {
     }
 
     /**
-     * @return the post_id
+     * @return the post_id 
      */
     public int getPost_id() {
         return post_id;
