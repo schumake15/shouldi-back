@@ -33,12 +33,21 @@ public class PostsService {
             database.closeConnection();
         }
     }
-    
+
+    public void finalize(RatingModel rating) {
+        try {
+            this.database.openConnection();
+            database.finalize(rating);
+        } finally {
+            database.closeConnection();
+        }
+    }
+
     public void updateAd(ViewedAdModel viewedAdModel) {
         try {
             this.database.openConnection();
             this.database.updateAd(viewedAdModel);
-                  
+
         } finally {
             database.closeConnection();
         }
@@ -47,7 +56,7 @@ public class PostsService {
     public List<PostTemplate> getMyPosts(GenericGetModel getModel) {
         try {
             this.database.openConnection();
-            return database.getMyPosts(getModel); 
+            return database.getMyPosts(getModel);
         } finally {
             database.closeConnection();
         }
@@ -142,15 +151,15 @@ public class PostsService {
             database.closeConnection();
         }
     }
-    
-        public List<AdPostTemplate> adGetMyPosts(GenericGetModel getModel) {
+
+    public List<AdPostTemplate> adGetMyPosts(GenericGetModel getModel) {
         try {
             this.database.openConnection();
-            return database.adGetMyPosts(getModel); 
+            return database.adGetMyPosts(getModel);
         } finally {
             database.closeConnection();
         }
-        
+
     }
 
 }
