@@ -44,9 +44,6 @@ import com.zenith.templates.AdPostTemplate;
 import com.zenith.templates.PostTemplate;
 import java.util.Random;
 
-
-
-
 public class PostDAO {
 
     Session session = null;
@@ -61,14 +58,15 @@ public class PostDAO {
             session.close();
         }
     }
-    
+
     public void finalize(RatingModel rating) {
-        session.beginTransaction(); 
+        session.beginTransaction();
         String hql = "From PostBean E WHERE E.post_id = :_id";
         List posts
                 = session.createQuery(hql).setParameter("_id", rating.getPost_id())
                         .list();
-        PostBean postBean = (PostBean)posts.get(0); 
+        PostBean postBean = (PostBean) posts.get(0);
+        postBean.setCompleted(1);
         List<LikeBean> likes = postBean.getLikes();
         List<DislikeBean> dislikes = postBean.getDislikes();
         List<Integer> ids = new ArrayList<Integer>();
@@ -101,12 +99,13 @@ public class PostDAO {
                     }
                 }
             }
+            session.update(postBean);
 
             session.getTransaction().commit();
         }
-       
+
     }
-    
+
     public void updateAd(ViewedAdModel viewedAdModel) {
 
         /* Get post based on ID */
@@ -114,20 +113,20 @@ public class PostDAO {
         List posts
                 = session.createQuery(hql).setParameter("_id", viewedAdModel.getPost_id())
                         .list();
-        if(!posts.isEmpty()) {
+        if (!posts.isEmpty()) {
             session.getTransaction().begin();
-            AdvertisementBean adBean = (AdvertisementBean)posts.get(0); 
-            int numShown = adBean.getNum_shown() + 1; 
-            int wasClicked = adBean.getNum_clicked() + viewedAdModel.getClicked(); 
+            AdvertisementBean adBean = (AdvertisementBean) posts.get(0);
+            int numShown = adBean.getNum_shown() + 1;
+            int wasClicked = adBean.getNum_clicked() + viewedAdModel.getClicked();
             adBean.setNum_clicked(wasClicked);
             adBean.setNum_shown(numShown);
-            session.update(adBean); 
+            session.update(adBean);
             session.getTransaction().commit();
-            
+
         }
-        
+
     }
-    
+
     private PostTemplate getRandomAd() {
 
 
@@ -136,18 +135,17 @@ public class PostDAO {
         List ads
                 = session.createQuery(hql)
                         .list();
-        
+
         // number of ads is the maximum and the 0 is our minimum 
         Random rand = new Random();
-        if(ads.size() == 0) {
-            return null; 
+        if (ads.size() == 0) {
+            return null;
         }
         int n = rand.nextInt(ads.size()) + 0;
-        AdvertisementBean adBean = (AdvertisementBean)ads.get(n); 
-        
-        
-        String image = ImageConversionUtil.convertToB64(adBean.getImage()); 
-        return new PostTemplate(adBean.getNum_clicked(), adBean.getNum_shown(), image, adBean.getAd_link(), 1, adBean.getAd_id()); 
+        AdvertisementBean adBean = (AdvertisementBean) ads.get(n);
+
+        String image = ImageConversionUtil.convertToB64(adBean.getImage());
+        return new PostTemplate(adBean.getNum_clicked(), adBean.getNum_shown(), image, adBean.getAd_link(), 1, adBean.getAd_id());
 
     }
 
@@ -158,20 +156,20 @@ public class PostDAO {
         UserBean userBean = service.getUserByToken(token);
 
         /* Need to hold posts temporarily */
-        List<AdvertisementBean> ads = userBean.getAds(); 
+        List<AdvertisementBean> ads = userBean.getAds();
 
         /* All posts will be converted to a PostTemplate */
         List<AdPostTemplate> postTemplate = new ArrayList<AdPostTemplate>();
         String image;
-        
+
         session.update(userBean);
         for (AdvertisementBean adBean : ads) {
-            
+
             image = ImageConversionUtil.convertToB64(adBean.getImage());
-            postTemplate.add(new AdPostTemplate(adBean.getNum_clicked(), adBean.getNum_shown(), image)); 
-    
+            postTemplate.add(new AdPostTemplate(adBean.getNum_clicked(), adBean.getNum_shown(), image));
+
         }
-        return postTemplate; 
+        return postTemplate;
     }
 
     public List<PostTemplate> getMyPosts(GenericGetModel getModel) {
@@ -189,7 +187,7 @@ public class PostDAO {
         /* Image needs to be converted to proper format for each post */
         String image;
         session.update(userBean);
-        temp = userBean.getUser_posts(); 
+        temp = userBean.getUser_posts();
         for (PostBean bean : temp) {
             image = ImageConversionUtil.convertToB64(bean.getImage());
             List<CommentBean> commentBean = bean.getPost_comments();
@@ -204,18 +202,17 @@ public class PostDAO {
     public List<PostTemplate> getFlaggedPosts() {
 
         session.beginTransaction();
-        List<String> comments = new ArrayList<String>(); 
+        List<String> comments = new ArrayList<String>();
         List<PostBean> flagged = session.createCriteria(PostBean.class).list();
         flagged = session.createCriteria(PostBean.class).add(Restrictions.eq("flagged", 1)).list();
-        List<PostTemplate> templates=new ArrayList<PostTemplate>();
-        for(PostBean post: flagged)
-        {
-        	String image = ImageConversionUtil.convertToB64(post.getImage());
-            List<CommentBean> commentBean = post.getPost_comments(); 
+        List<PostTemplate> templates = new ArrayList<PostTemplate>();
+        for (PostBean post : flagged) {
+            String image = ImageConversionUtil.convertToB64(post.getImage());
+            List<CommentBean> commentBean = post.getPost_comments();
             for (CommentBean comment : commentBean) {
-                comments.add(comment.getComment_text()); 
+                comments.add(comment.getComment_text());
             }
-            templates.add(new PostTemplate(post.getPost_id(), post.getLikes().size(), image, post.getDislikes().size(), comments)); 
+            templates.add(new PostTemplate(post.getPost_id(), post.getLikes().size(), image, post.getDislikes().size(), comments));
         }
         return templates;
     }
@@ -236,6 +233,7 @@ public class PostDAO {
         return highest;
 
     }
+
     /*
     public List<PostTemplate> getHall() {
         List<PostBean> posts = session.createCriteria(PostBean.class).s
@@ -254,47 +252,107 @@ public class PostDAO {
         return highest;
 
     }*/
-
     public List<PostTemplate> getUnseenPost(GenericGetModel user) {
 
         session.beginTransaction();
-        UserDAO dao= new UserDAO();
+        UserDAO dao = new UserDAO();
         List<PostBean> choosable = session.createCriteria(PostBean.class).list();
         choosable = session.createCriteria(PostBean.class).add(Restrictions.eq("completed", 0)).list();
+
         dao.openConnection();
-        UserBean viewer= dao.getUserByToken(user.getToken());
+        UserBean viewer = dao.getUserByToken(user.getToken());
         List<VPBean> seen = viewer.getViewed_posts();
         List<PostBean> left = new ArrayList<PostBean>();
-        for (VPBean vp : seen) {
-            choosable.remove(vp.getViewed());
+        List<PostBean> returnPosts = new ArrayList<PostBean>();
+        List<PostTemplate> posts = new ArrayList<PostTemplate>();
+
+        int viewed_post_id = 0;
+        int current_user_id = viewer.getUser_id();
+
+        if (!seen.isEmpty()) {
+
+            for (PostBean post : choosable) {
+                boolean hasViewed = false;
+                for (VPBean vp : seen) {
+                    viewed_post_id = vp.getViewed().getPost_id();
+                    if (post.getPost_id() == vp.getViewed().getPost_id()) {
+                        hasViewed = true;
+                    }
+
+                }
+
+                if (!hasViewed) {
+                    returnPosts.add(post);
+                }
+
+            }
+
+            for (int i = 0; i < returnPosts.size(); i++) {
+                if (i < 9) {
+                    System.out.println("Made it!");
+                    posts.add(new PostTemplate(returnPosts.get(i).getPost_id(), 
+                            ImageConversionUtil.convertToB64(returnPosts.get(i).getImage()), 
+                            returnPosts.get(i).getPoster().getUser_id(), returnPosts.get(i).getOccasion()));
+                }
+            }
+
+            PostTemplate model = this.getRandomAd();
+            if (model != null) {
+                posts.add(model);
+            }
+
+            int viewer_id = viewer.getUser_id();
+            int i = 0;
+            List<PostTemplate> finalReturn = new ArrayList<PostTemplate>();
+            for (PostTemplate post : posts) {
+                if (viewer_id != post.getPoster_id()) {
+                    finalReturn.add(post);
+                }
+            }
+
+            return finalReturn;
+
+        } else {
+            /* no seen posts */
+
+            for (int i = 0; i < choosable.size(); i++) {
+                if (i < 9) {
+                    System.out.println("i" + i); 
+                    posts.add(new PostTemplate(choosable.get(i).getPost_id(),
+                            ImageConversionUtil.convertToB64(choosable.get(i).getImage()),
+                            choosable.get(i).getPoster().getUser_id(), choosable.get(i).getOccasion())); 
+                }
+            }
+
+            PostTemplate model = this.getRandomAd();
+            if (model != null) {
+                posts.add(model);
+            }
+
+            int viewer_id = viewer.getUser_id();
+            int i = 0;
+            List<PostTemplate> finalReturn = new ArrayList<PostTemplate>();
+            for (PostTemplate post : posts) {
+
+                if (viewer_id != post.getPoster_id()) {
+                    finalReturn.add(post);
+                }
+
+            }
+
+            dao.closeConnection();
+            return finalReturn; 
+
         }
-        List<PostTemplate> posts= new ArrayList<PostTemplate>();
-        for(int i=0; i<choosable.size();i++)
-        {
-        	if(i<9)
-        	{
-        		posts.add(new PostTemplate(choosable.get(i).getPost_id(), ImageConversionUtil.convertToB64(choosable.get(i).getImage())));
-        	}
-        }
-        dao.closeConnection();
-       
-        /* Get random ad */ 
-        PostTemplate model = this.getRandomAd(); 
-        if (model != null){
-            posts.add(model); 
-        }
-        
-        PostBean random = choosable.get(new Random().nextInt(choosable.size()));
-        return posts;
     }
 
     public List<PostTemplate> getUnseenPostGendered(GenderedGetModel request) {
         session.beginTransaction();
-        UserDAO udao= new UserDAO();
-        UserBean user= udao.getUserByToken(request.getToken());
+        UserDAO udao = new UserDAO();
+        UserBean user = udao.getUserByToken(request.getToken());
         List<PostBean> choosable = session.createCriteria(PostBean.class).list();
-        choosable = session.createCriteria(PostBean.class).add(Restrictions.eq("completed", 0)).list();
-        
+        choosable = session.createCriteria(PostBean.class).add(Restrictions.eq("completed", 0)).list(); 
+
         List<VPBean> seen = user.getViewed_posts();
         List<PostBean> left = new ArrayList<PostBean>();
         for (VPBean vp : seen) {
@@ -302,7 +360,7 @@ public class PostDAO {
         }
         List<PostBean> remove = new ArrayList<PostBean>();
         for (PostBean post : choosable) {
-            String postGender = post.getPoster().getGender();
+            String postGender = post.getPoster().getGender(); 
             if (!request.getGender().equalsIgnoreCase(postGender)) {
                 remove.add(post);
             }
@@ -310,13 +368,11 @@ public class PostDAO {
         for (PostBean post : remove) {
             choosable.remove(post);
         }
-        List<PostTemplate> posts= new ArrayList<PostTemplate>();
-        for(int i=0; i<choosable.size();i++)
-        {
-        	if(i<9)
-        	{
-        		posts.add(new PostTemplate(choosable.get(i).getPost_id(),  ImageConversionUtil.convertToB64( choosable.get(i).getImage())));
-        	}
+        List<PostTemplate> posts = new ArrayList<PostTemplate>();
+        for (int i = 0; i < choosable.size(); i++) {
+            if (i < 9) {
+                //	posts.add(new PostTemplate(choosable.get(i).getPost_id(),  ImageConversionUtil.convertToB64( choosable.get(i).getImage())));
+            }
         }
         PostBean random = choosable.get(new Random().nextInt(choosable.size()));
         return posts;
@@ -375,6 +431,30 @@ public class PostDAO {
         return true;
     }
 
+    public boolean createAd(AdPostModel adPostModel) {
+
+        /* Creates new post */
+        UserDAO userdao = new UserDAO();
+        userdao.openConnection();
+
+        /* Remove money from the sponsors balance based on amount to pay for ad */
+        UserBean sponsor = userdao.getUserByToken(adPostModel.getToken());
+        String s = adPostModel.getImage();
+        s = s.substring(s.lastIndexOf(',') + 1);
+        /* create ad and save both the ad and the sponsor */
+        Blob image = ImageConversionUtil.convertToBlob(s);
+        AdvertisementBean adBean = new AdvertisementBean(image, adPostModel.getUrl(), sponsor);
+
+        session.beginTransaction();
+        session.save(adBean);
+        session.getTransaction().commit();
+        userdao.closeConnection();
+
+        this.saveNewBalance(adPostModel);
+
+        return true;
+    }
+
     public void removePost(PostBean post) {
         PostBean delPost = null;
         Transaction tx = session.getTransaction();
@@ -398,17 +478,17 @@ public class PostDAO {
     public void like(RatingModel rating) {
         PostBean post = null;
         UserServiceImpl service = new UserServiceImpl();
-        UserBean rater = service.getUserByToken(rating.getToken()); 
-        
+        UserBean rater = service.getUserByToken(rating.getToken());
+
         Transaction tx = session.getTransaction();
         try {
             tx = session.beginTransaction();
-            post = this.getPostById(rating.getPost_id()); 
+            post = this.getPostById(rating.getPost_id());
             if (post != null) {
-                LikeBean like=new LikeBean(post.getPoster(), post);
-                VPBean view=new VPBean(rater, post);
+                LikeBean like = new LikeBean(post.getPoster(), post);
+                VPBean view = new VPBean(rater, post);
                 if (!rating.getComment().equals("")) {
-                    CommentBean comment= new CommentBean(post, rater, rating.getComment());
+                    CommentBean comment = new CommentBean(post, rater, rating.getComment());
                     session.save(comment);
                 }
                 session.save(like);
@@ -428,16 +508,16 @@ public class PostDAO {
     public void dislike(RatingModel rating) {
         PostBean post = null;
         UserServiceImpl service = new UserServiceImpl();
-        UserBean rater = service.getUserByToken(rating.getToken()); 
+        UserBean rater = service.getUserByToken(rating.getToken());
         Transaction tx = session.getTransaction();
         try {
             tx = session.beginTransaction();
-            post = this.getPostById(rating.getPost_id()); 
+            post = this.getPostById(rating.getPost_id());
             if (post != null) {
-                DislikeBean dislike=new DislikeBean(post.getPoster(), post);
-                VPBean view=new VPBean(rater, post);
+                DislikeBean dislike = new DislikeBean(post.getPoster(), post);
+                VPBean view = new VPBean(rater, post);
                 if (!rating.getComment().equals("")) {
-                    CommentBean comment= new CommentBean(post, rater, rating.getComment());
+                    CommentBean comment = new CommentBean(post, rater, rating.getComment());
                     session.save(comment);
                 }
                 session.save(dislike);
@@ -469,7 +549,7 @@ public class PostDAO {
             session.beginTransaction();
             PostBean postBean = (PostBean) posts.get(0);
             postBean.setFlag(1);
-            UserBean user=postBean.getPoster();
+            UserBean user = postBean.getPoster();
             user.setFlag(1);
             session.save(user);
             session.update(postBean);
@@ -477,29 +557,6 @@ public class PostDAO {
             return true;
         }
 
-    }
-
-    public boolean createAd(AdPostModel adPostModel) {
-
-        /* Creates new post */
-        UserDAO userdao = new UserDAO();
-        userdao.openConnection();
-
-        /* Remove money from the sponsors balance based on amount to pay for ad */
-        UserBean sponsor = userdao.getUserByToken(adPostModel.getToken());
-
-        /* create ad and save both the ad and the sponsor */
-        Blob image = ImageConversionUtil.convertToBlob(adPostModel.getImage());
-        AdvertisementBean adBean = new AdvertisementBean(image, adPostModel.getUrl(), sponsor);
-
-        session.beginTransaction();
-        session.save(adBean);
-        session.getTransaction().commit();
-        userdao.closeConnection();
-
-        this.saveNewBalance(adPostModel);
-
-        return true;
     }
 
     /* Should make a check so user cannot go into negative balance */

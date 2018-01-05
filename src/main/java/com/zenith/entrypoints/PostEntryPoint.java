@@ -22,9 +22,9 @@ import com.zenith.request.model.GenderedGetModel;
 import com.zenith.request.model.GenericGetModel;
 import com.zenith.request.model.PostModel;
 import com.zenith.request.model.RatingModel;
-import com.zenith.request.model.ViewedAdModel;
+import com.zenith.request.model.ViewedAdModel; 
 import com.zenith.service.PostsService;
-import com.zenith.service.UserServiceImpl;
+import com.zenith.service.UserServiceImpl; 
 import com.zenith.service.VerifyTokenCredentials;
 
 import com.zenith.templates.AdPostTemplate;
@@ -117,11 +117,11 @@ public class PostEntryPoint {
         return message;
     }
 
-    @PUT
+    @PUT  
     @Path("/flag")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces({MediaType.APPLICATION_JSON})
-    public GenericSuccessOrFailureMessage flagPost(FlagPostModel post) {
+    public GenericSuccessOrFailureMessage flagPost(FlagPostModel post) { 
 
         GenericSuccessOrFailureMessage message = new GenericSuccessOrFailureMessage();
         PostsService service = new PostsService();
