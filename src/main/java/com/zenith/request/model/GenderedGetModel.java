@@ -1,10 +1,10 @@
 package com.zenith.request.model;
 
 public class GenderedGetModel {
-	
-	private String token; 
-	private String gender;
-	
+
+    private String token;
+    private String gender;
+    private int amountToPay;
 
     /**
      * @return the token
@@ -20,12 +20,26 @@ public class GenderedGetModel {
         this.token = token;
     }
 
-	public String getGender() {
-		return gender;
-	}
+    public String getGender() {
+        return gender;
+    }
 
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
-    
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    /**
+     * @return the amountToPay
+     */
+    public int getAmountToPay() {
+        return amountToPay;
+    }
+
+    /**
+     * @param amountToPay the amountToPay to set
+     */
+    public void setAmountToPay(int amountToPay) {
+        this.amountToPay = amountToPay;
+    }
+
 }

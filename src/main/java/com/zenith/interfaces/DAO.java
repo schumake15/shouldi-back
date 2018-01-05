@@ -11,7 +11,7 @@ import com.zenith.Beans.PostBean;
 import com.zenith.Beans.UserBean;
 
 /**
- *
+ * 
  * @author calebschumake
  */
 public interface DAO {

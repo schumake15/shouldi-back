@@ -60,6 +60,6 @@ Contributor(s):
     <mapping class="com.zenith.Beans.AdvertisementBean"/>
     <mapping class="com.zenith.Beans.VPBean"/>
     <mapping class="com.zenith.Beans.DislikeBean"/>
-    <mapping class="com.zenith.Beans.LikeBean"/>
+    <mapping class="com.zenith.Beans.LikeBean"/> 
   </session-factory>
 </hibernate-configuration>

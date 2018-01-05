@@ -8,8 +8,8 @@ package com.zenith.application.path;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-/**
- *
+/** 
+ * 
  * @author calebschumake
  */
 /* Application path will be the first part of any URI to
