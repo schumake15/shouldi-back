@@ -46,8 +46,8 @@ Contributor(s):
     <property name="hibernate.connection.url">jdbc:oracle:thin:@localhost:1521:xe</property>
     
   
-    <property name="hibernate.connection.username">caleb</property>
-    <property name="hibernate.connection.password">caleb</property> 
+    <property name="hibernate.connection.username"></property>
+    <property name="hibernate.connection.password"></property> 
 
     <property name="show_sql">true</property>
     <property name="hibernate.hbm2ddl.auto">create</property>
